@@ -13,7 +13,10 @@ financial_news = alpha_vantage_api_call(alpha_vantage_api_key)
 st.title("Alpha Vantage  news:")
 st.text(financial_news)
 
+col1, col2 = st.columns([5, 5])
 
+count = 0
+# Loop through the items in the feed
 for item in financial_news['feed']:
     # Access the desired fields within each object
     title = item['title']
@@ -22,16 +25,30 @@ for item in financial_news['feed']:
     overall_sentiment_score = item['overall_sentiment_score']
     overall_sentiment_label = item['overall_sentiment_label']
     ticker_sentiment = item['ticker_sentiment']
+    
 
-    # Print out the values of the fields
-    st.subheader(f'Summary: {title}')
-    st.image(banner_image)
-    st.text(f'Summary: {summary}')
-    st.text(f'Overall Sentiment Score: {overall_sentiment_score}')
-    st.text(f'Overall Sentiment Label: {overall_sentiment_label}')
-    st.text(f'Ticker Sentiment: {ticker_sentiment}')
-    st.text("")
-    st.text("")
+    # Display the item in the columns
+    if count%2==0:
+        with col1:
+            st.subheader(title)
+            st.image(banner_image)
+            st.text(f'Summary: {summary}')
+            st.text(f'Overall Sentiment Score: {overall_sentiment_score}')
+            st.text(f'Overall Sentiment Label: {overall_sentiment_label}')
+            st.text(f'Ticker Sentiment: {ticker_sentiment}')
+            st.markdown("""---""")
+            st.text("")
+    else:
+        with col2:
+            st.subheader(title)
+            st.image(banner_image)
+            st.text(f'Summary: {summary}')
+            st.text(f'Overall Sentiment Score: {overall_sentiment_score}')
+            st.text(f'Overall Sentiment Label: {overall_sentiment_label}')
+            st.text(f'Ticker Sentiment: {ticker_sentiment}')
+            st.markdown("""---""")
+            st.text("")
+    count+=1
 
 finance_news = news_api_call(news_api_key)
 st.title("News API:")
