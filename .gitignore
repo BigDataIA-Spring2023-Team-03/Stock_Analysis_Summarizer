@@ -1,0 +1,13 @@
+.env
+airflow/.env
+streamlit/.env
+__pycache__
+
+# venv
+openai_venv
+
+# jv
+JV
+Notes.txt
+jv_scrap.py
+/airflow/logs/
