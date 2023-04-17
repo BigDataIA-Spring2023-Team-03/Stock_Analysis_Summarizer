@@ -1,6 +1,7 @@
 .env
 airflow/.env
 streamlit/.env
+streamlit/.key
 __pycache__
 
 analysis_pipeline_local.py

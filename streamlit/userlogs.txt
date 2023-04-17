@@ -1,0 +1,15 @@
+Jared signed up
+Jared logged in
+2023-04-17 16:53:11: Jared logged in
+2023-04-17 16:54:17: Jared logged in
+2023-04-17 16:54:54: Jared logged in
+2023-04-17 16:54:59:  logged out
+2023-04-17 16:57:08: Jared logged in
+2023-04-17 16:57:45: Jared failed to log in with username: Jared and password: Jared1234
+2023-04-17 16:57:48: Jared logged in
+2023-04-17 17:17:20 - Jared logged in
+2023-04-17 17:17:53 - Jared logged in
+2023-04-17 17:17:57 - Jared logged out
+2023-04-17 17:18:07 - Jared logged in
+2023-04-17 17:19:52 - Jared logged in
+2023-04-17 17:20:00 - Jared logged out
