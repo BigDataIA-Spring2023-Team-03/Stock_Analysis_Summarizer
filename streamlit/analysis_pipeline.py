@@ -4,6 +4,7 @@ import time
 from datetime import datetime, timedelta
 import json
 from decouple import config
+import re
 
 # Summarization
 from transformers import pipeline
@@ -32,8 +33,6 @@ s3_client = boto3.client(
 
 ##########################################################################
 
-
-
 # TOP 10 stocks in SP500 by index weight:
 # stocks = ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOGL', 'BRK.B', 'GOOG', 'TSLA', 'UNH', 'META']
 
@@ -51,22 +50,29 @@ def check_stock_exists(stock):
 def get_latest_date(stock):
     latest_date = None
     try:
-        response = s3_client.list_objects_v2(Bucket=s3_bucket_name, Prefix=stock)
+        response = s3_client.list_objects_v2(Bucket=s3_bucket_name, Prefix=f'Analysis_Results/{stock}/')
         if 'Contents' in response:
-            dates = [obj['Key'].split('/')[1] for obj in response['Contents']]
+            files = [obj['Key'].split('/')[2] for obj in response['Contents']]
+            # List comprehension to extract date string from each file name
+            dates = [re.search(r'\d{2}_\d{2}_\d{4}', file_name).group() for file_name in files]
             dates.sort(reverse=True)
             latest_date = dates[0]
     except Exception as e:
         print(f'Error: {e}')
     return latest_date
 
+# TESTING
+# stock = 'aapl'
+# latest_date = get_latest_date(stock)
+
 def get_new_article_data(stock):
     url = "https://seeking-alpha.p.rapidapi.com/analysis/v2/list"
     current_timestamp = int(time.time())
     if check_stock_exists(stock):
         latest_date = get_latest_date(stock)
+        # Only run once a day
         if latest_date:
-            latest_date_timestamp = int(time.mktime(time.strptime(latest_date, '%Y-%m-%d')))
+            latest_date_timestamp = int(time.mktime(time.strptime(latest_date, '%m-%d-%Y')))
             latest_date_timestamp = latest_date_timestamp + timedelta(days=1)
             time_elapsed = current_timestamp - latest_date_timestamp
     else:
@@ -235,8 +241,8 @@ def push_summarized_data(stock, date, article_data):
 if __name__=='__main__':
     # TOP 10 stocks in SP500 by index weight:
     # stocks = ['aapl', 'msft', 'amzn', 'nvda', 'googl', 'brk.b', 'goog', 'tsla', 'unh', 'meta']
-    stocks = ['msft', 'amzn', 'nvda', 'googl']
-    # stocks = ['aapl']
+    # stocks = ['msft', 'amzn', 'nvda', 'googl']
+    stocks = ['aapl']
     # For each stock
     for stock in stocks:
         try:
