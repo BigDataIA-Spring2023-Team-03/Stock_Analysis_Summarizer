@@ -3,6 +3,8 @@ airflow/.env
 streamlit/.env
 __pycache__
 
+analysis_pipeline_local.py
+
 # venv
 stock_env
 

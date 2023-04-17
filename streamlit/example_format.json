@@ -1,7 +1,7 @@
 [
     {
         "article_id": 1,
-        "date": 1681685118,
+        "publish_date": 1681685118,
         "title": "test2",
         "summary_from_seeking_alpha": "blah blah",
         "bart_summary": "blah",
@@ -9,7 +9,7 @@
     },   
     {   
         "article_id": 2,
-        "date": 1681685118,
+        "publish_date": 1681685118,
         "title": "test2",
         "summary_from_seeking_alpha": "blah blah",
         "bart_summary": "blah",

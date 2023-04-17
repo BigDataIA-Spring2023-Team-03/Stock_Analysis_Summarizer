@@ -80,28 +80,46 @@ def get_new_article_data(stock):
         }
         response = requests.request("GET", url, headers=headers, params=querystring)
 
-        if response.status_code == 204:
-            print(f'No New Analysis Articles for {i}')
-        # Get Data from the articles
-        else:
-            res = json.loads(response.text)
-            article_data = []
-            for j in res['data']:
-                id = j['id']
-                url = "https://seeking-alpha.p.rapidapi.com/analysis/v2/get-details"
-                querystring = {"id": id}
-                headers = {
-                    "X-RapidAPI-Key": X_RapidAPI_Key,
-                    "X-RapidAPI-Host": X_RapidAPI_Host
-                }
-                response = requests.request("GET", url, headers=headers, params=querystring)
-                if response.status_code == 200:
+    if response.status_code == 204:
+        print(f'No New Analysis Articles for {i}')
+    
+    # Get Data from the articles
+    else:
+        # Unique Publish Date List
+        unique_publish_date = []
+        
+        res = json.loads(response.text)
+        article_data = []
+        for j in res['data']:
+            id = j['id']
+            url = "https://seeking-alpha.p.rapidapi.com/analysis/v2/get-details"
+            querystring = {"id": id}
+            headers = {
+                "X-RapidAPI-Key": X_RapidAPI_Key,
+                "X-RapidAPI-Host": X_RapidAPI_Host
+            }
+            response = requests.request("GET", url, headers=headers, params=querystring)
+            if response.status_code == 200:
                 # print(response.text)
-                    res = json.loads(response.text)
+                res = json.loads(response.text)
+                print(res)
 
-                    # TODO: Convert content from HTML to string
-                    # res['data']['attributes']['content']
+                # TODO: Convert content from HTML to string
+                # res['data']['attributes']['content']
+                
+                # TODO: 
+                # Check if can get article
+                if 'errors' in res:
+                    print("The dictionary has a key called 'error'")
+                    print(response.text)
+                else:
+                    # Append Unique Publish dates --> used in file creation
+                    date_obj = datetime.fromisoformat(res['data']['attributes']['publishOn'])
 
+                    new_date_str = date_obj.strftime('%m_%d_%Y')
+                    if new_date_str not in unique_publish_date:
+                        unique_publish_date.append(new_date_str)
+                    
                     # print(res)
                     data = {
                         'article_id': id,
@@ -112,7 +130,7 @@ def get_new_article_data(stock):
                     }
                     # print(id + ':::: ' + str(data))
                     article_data.append(data)
-    return article_data
+    return article_data, unique_publish_date
     # Push to XCOM
     # ti.xcom_push(key=stock, value=article_data)
     
@@ -196,14 +214,14 @@ def get_sentiment(summary):
 
 
 # Push Results to S3
-def push_summarized_data(stock, article_data):
+def push_summarized_data(stock, date, article_data):
     # Convert the list of dictionaries to a JSON string
     json_data = json.dumps(str(article_data))
     
     # %Y-%m-%d %H:%M:%S
-    current_time = datetime.datetime.now().strftime("%Y_%m_%d")
+    # current_time = datetime.datetime.now().strftime("%Y_%m_%d")
     # print(current_time)
-    file_name = f'Analysis_Results/{stock}_{current_time}.json'
+    file_name = f'Analysis_Results/{stock}/{stock}_{date}.json'
     
     # Upload the JSON string to S3
     s3_client.put_object(Bucket=s3_bucket_name, Key=file_name, Body=json_data)
@@ -216,31 +234,43 @@ def push_summarized_data(stock, article_data):
 
 if __name__=='__main__':
     # TOP 10 stocks in SP500 by index weight:
-    # stocks = ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOGL', 'BRK.B', 'GOOG', 'TSLA', 'UNH', 'META']
-    stocks = ['aapl']
+    # stocks = ['aapl', 'msft', 'amzn', 'nvda', 'googl', 'brk.b', 'goog', 'tsla', 'unh', 'meta']
+    stocks = ['msft', 'amzn', 'nvda', 'googl']
+    # stocks = ['aapl']
     # For each stock
     for stock in stocks:
         try:
             print(f'Stock: {stock}')
             start_time = time.time()
 
-            article_data = get_new_article_data(stock)
-            
-            # for each article
-            for i, article in enumerate(article_data):
-                # Get Summary
-                summary = article_summary(article)
-                
-                # Add summary to article dictionary
-                article_data[i]['bart_summary'] = summary
-                
-                # Get Sentiment
-                probs = get_sentiment(summary)
-                # Add sentiment to article dictionary
-                article_data[i]['sentiment'] = probs
-                
-            # Push Data to S3
-            push_summarized_data(stock, article_data)
+            article_data, unique_publish_date = get_new_article_data(stock)
+             
+            # For each unique date
+            article_data_date_subset = []
+            for date in unique_publish_date:
+                # for each article
+                for i, article in enumerate(article_data): 
+                    # Check if the dates line up
+                    if date == datetime.fromisoformat(article['publish_date']).strftime('%m_%d_%Y'):
+                        # print(date)
+                        # print(article['publish_date'])
+                        
+                        # Get Summary
+                        summary = article_summary(article)
+                        
+                        # Add summary to article dictionary
+                        article_data[i]['bart_summary'] = summary
+                        
+                        # Get Sentiment
+                        probs = get_sentiment(summary)
+                        # Add sentiment to article dictionary
+                        article_data[i]['sentiment'] = probs
+                        
+                        # Append
+                        article_data_date_subset.append(article_data[i])
+                   
+                # Push Data to S3
+                push_summarized_data(stock, date, article_data_date_subset)
 
         except Exception as e:
             print(f'Error during processing for {stock}')
