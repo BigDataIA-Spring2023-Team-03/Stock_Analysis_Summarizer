@@ -4,7 +4,7 @@ streamlit/.env
 __pycache__
 
 # venv
-openai_venv
+stock_env
 
 # jv
 JV

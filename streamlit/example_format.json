@@ -1,0 +1,18 @@
+[
+    {
+        "article_id": 1,
+        "date": 1681685118,
+        "title": "test2",
+        "summary_from_seeking_alpha": "blah blah",
+        "bart_summary": "blah",
+        "finbert_sentiment": "positive"
+    },   
+    {   
+        "article_id": 2,
+        "date": 1681685118,
+        "title": "test2",
+        "summary_from_seeking_alpha": "blah blah",
+        "bart_summary": "blah",
+        "finbert_sentiment": "negative"
+    }
+]
