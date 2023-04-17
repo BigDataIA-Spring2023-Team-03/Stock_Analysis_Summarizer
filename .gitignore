@@ -14,3 +14,4 @@ JV
 Notes.txt
 jv_scrap.py
 /airflow/logs/
+streamlit/key.key
