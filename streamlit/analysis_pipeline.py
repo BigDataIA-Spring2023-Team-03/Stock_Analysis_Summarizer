@@ -1,7 +1,7 @@
 import boto3
 import requests
 import time
-import datetime
+from datetime import datetime, timedelta
 import json
 from decouple import config
 
@@ -37,51 +37,81 @@ s3_client = boto3.client(
 # TOP 10 stocks in SP500 by index weight:
 # stocks = ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOGL', 'BRK.B', 'GOOG', 'TSLA', 'UNH', 'META']
 
+def check_stock_exists(stock):
+    try:
+        response = s3_client.list_objects_v2(Bucket=s3_bucket_name, Prefix=stock)
+        if 'Contents' in response:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(f'Error: {e}')
+        return False
+
+def get_latest_date(stock):
+    latest_date = None
+    try:
+        response = s3_client.list_objects_v2(Bucket=s3_bucket_name, Prefix=stock)
+        if 'Contents' in response:
+            dates = [obj['Key'].split('/')[1] for obj in response['Contents']]
+            dates.sort(reverse=True)
+            latest_date = dates[0]
+    except Exception as e:
+        print(f'Error: {e}')
+    return latest_date
+
 def get_new_article_data(stock):
-    # Get Articles for Stock
     url = "https://seeking-alpha.p.rapidapi.com/analysis/v2/list"
     current_timestamp = int(time.time())
-    one_month_ago_timestamp = current_timestamp - (30 * 24 * 60 * 60)
-
-    querystring = {"id": stock,"since": one_month_ago_timestamp ,"until":current_timestamp}
-    headers = {
-        "X-RapidAPI-Key": X_RapidAPI_Key,
-        "X-RapidAPI-Host": X_RapidAPI_Host
-    }
-    response = requests.request("GET", url, headers=headers, params=querystring)
-
-    if response.status_code == 204:
-        print(f'No New Analysis Articles for {i}')
-    # Get Data from the articles
+    if check_stock_exists(stock):
+        latest_date = get_latest_date(stock)
+        if latest_date:
+            latest_date_timestamp = int(time.mktime(time.strptime(latest_date, '%Y-%m-%d')))
+            latest_date_timestamp = latest_date_timestamp + timedelta(days=1)
+            time_elapsed = current_timestamp - latest_date_timestamp
     else:
-        res = json.loads(response.text)
-        article_data = []
-        for j in res['data']:
-            id = j['id']
-            url = "https://seeking-alpha.p.rapidapi.com/analysis/v2/get-details"
-            querystring = {"id": id}
-            headers = {
-                "X-RapidAPI-Key": X_RapidAPI_Key,
-                "X-RapidAPI-Host": X_RapidAPI_Host
-            }
-            response = requests.request("GET", url, headers=headers, params=querystring)
-            if response.status_code == 200:
-            # print(response.text)
-                res = json.loads(response.text)
+        time_elapsed = current_timestamp - (30 * 24 * 60 * 60)
 
-                # TODO: Convert content from HTML to string
-                # res['data']['attributes']['content']
+    if time_elapsed > 0:
+        querystring = {"id": stock,"since": time_elapsed ,"until":current_timestamp}
+        headers = {
+            "X-RapidAPI-Key": X_RapidAPI_Key,
+            "X-RapidAPI-Host": X_RapidAPI_Host
+        }
+        response = requests.request("GET", url, headers=headers, params=querystring)
 
-                # print(res)
-                data = {
-                    'article_id': id,
-                    'title': res['data']['attributes']['title'],
-                    'publish_date': res['data']['attributes']['publishOn'],
-                    'summary_from_seeking_alpha': res['data']['attributes']['summary'],
-                    'content': res['data']['attributes']['content']
+        if response.status_code == 204:
+            print(f'No New Analysis Articles for {i}')
+        # Get Data from the articles
+        else:
+            res = json.loads(response.text)
+            article_data = []
+            for j in res['data']:
+                id = j['id']
+                url = "https://seeking-alpha.p.rapidapi.com/analysis/v2/get-details"
+                querystring = {"id": id}
+                headers = {
+                    "X-RapidAPI-Key": X_RapidAPI_Key,
+                    "X-RapidAPI-Host": X_RapidAPI_Host
                 }
-                # print(id + ':::: ' + str(data))
-                article_data.append(data)
+                response = requests.request("GET", url, headers=headers, params=querystring)
+                if response.status_code == 200:
+                # print(response.text)
+                    res = json.loads(response.text)
+
+                    # TODO: Convert content from HTML to string
+                    # res['data']['attributes']['content']
+
+                    # print(res)
+                    data = {
+                        'article_id': id,
+                        'title': res['data']['attributes']['title'],
+                        'publish_date': res['data']['attributes']['publishOn'],
+                        'summary_from_seeking_alpha': res['data']['attributes']['summary'],
+                        'content': res['data']['attributes']['content']
+                    }
+                    # print(id + ':::: ' + str(data))
+                    article_data.append(data)
     return article_data
     # Push to XCOM
     # ti.xcom_push(key=stock, value=article_data)
