@@ -80,56 +80,56 @@ def get_new_article_data(stock):
         }
         response = requests.request("GET", url, headers=headers, params=querystring)
 
-    if response.status_code == 204:
-        print(f'No New Analysis Articles for {i}')
-    
-    # Get Data from the articles
-    else:
-        # Unique Publish Date List
-        unique_publish_date = []
+        if response.status_code == 204:
+            print(f'No New Analysis Articles for {i}')
         
-        res = json.loads(response.text)
-        article_data = []
-        for j in res['data']:
-            id = j['id']
-            url = "https://seeking-alpha.p.rapidapi.com/analysis/v2/get-details"
-            querystring = {"id": id}
-            headers = {
-                "X-RapidAPI-Key": X_RapidAPI_Key,
-                "X-RapidAPI-Host": X_RapidAPI_Host
-            }
-            response = requests.request("GET", url, headers=headers, params=querystring)
-            if response.status_code == 200:
-                # print(response.text)
-                res = json.loads(response.text)
-                print(res)
+        # Get Data from the articles
+        else:
+            # Unique Publish Date List
+            unique_publish_date = []
+            
+            res = json.loads(response.text)
+            article_data = []
+            for j in res['data']:
+                id = j['id']
+                url = "https://seeking-alpha.p.rapidapi.com/analysis/v2/get-details"
+                querystring = {"id": id}
+                headers = {
+                    "X-RapidAPI-Key": X_RapidAPI_Key,
+                    "X-RapidAPI-Host": X_RapidAPI_Host
+                }
+                response = requests.request("GET", url, headers=headers, params=querystring)
+                if response.status_code == 200:
+                    # print(response.text)
+                    res = json.loads(response.text)
+                    print(res)
 
-                # TODO: Convert content from HTML to string
-                # res['data']['attributes']['content']
-                
-                # TODO: 
-                # Check if can get article
-                if 'errors' in res:
-                    print("The dictionary has a key called 'error'")
-                    print(response.text)
-                else:
-                    # Append Unique Publish dates --> used in file creation
-                    date_obj = datetime.fromisoformat(res['data']['attributes']['publishOn'])
-
-                    new_date_str = date_obj.strftime('%m_%d_%Y')
-                    if new_date_str not in unique_publish_date:
-                        unique_publish_date.append(new_date_str)
+                    # TODO: Convert content from HTML to string
+                    # res['data']['attributes']['content']
                     
-                    # print(res)
-                    data = {
-                        'article_id': id,
-                        'title': res['data']['attributes']['title'],
-                        'publish_date': res['data']['attributes']['publishOn'],
-                        'summary_from_seeking_alpha': res['data']['attributes']['summary'],
-                        'content': res['data']['attributes']['content']
-                    }
-                    # print(id + ':::: ' + str(data))
-                    article_data.append(data)
+                    # TODO: 
+                    # Check if can get article
+                    if 'errors' in res:
+                        print("The dictionary has a key called 'error'")
+                        print(response.text)
+                    else:
+                        # Append Unique Publish dates --> used in file creation
+                        date_obj = datetime.fromisoformat(res['data']['attributes']['publishOn'])
+
+                        new_date_str = date_obj.strftime('%m_%d_%Y')
+                        if new_date_str not in unique_publish_date:
+                            unique_publish_date.append(new_date_str)
+                        
+                        # print(res)
+                        data = {
+                            'article_id': id,
+                            'title': res['data']['attributes']['title'],
+                            'publish_date': res['data']['attributes']['publishOn'],
+                            'summary_from_seeking_alpha': res['data']['attributes']['summary'],
+                            'content': res['data']['attributes']['content']
+                        }
+                        # print(id + ':::: ' + str(data))
+                        article_data.append(data)
     return article_data, unique_publish_date
     # Push to XCOM
     # ti.xcom_push(key=stock, value=article_data)
