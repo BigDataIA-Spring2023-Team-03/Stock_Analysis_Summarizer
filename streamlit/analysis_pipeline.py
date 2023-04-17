@@ -41,9 +41,9 @@ def get_new_article_data(stock):
     # Get Articles for Stock
     url = "https://seeking-alpha.p.rapidapi.com/analysis/v2/list"
     current_timestamp = int(time.time())
-    one_day_ago_timestamp = current_timestamp - (7 * 24 * 60 * 60)
+    one_month_ago_timestamp = current_timestamp - (30 * 24 * 60 * 60)
 
-    querystring = {"id": stock,"since": one_day_ago_timestamp ,"until":current_timestamp}
+    querystring = {"id": stock,"since": one_month_ago_timestamp ,"until":current_timestamp}
     headers = {
         "X-RapidAPI-Key": X_RapidAPI_Key,
         "X-RapidAPI-Host": X_RapidAPI_Host
@@ -86,10 +86,10 @@ def get_new_article_data(stock):
     # Push to XCOM
     # ti.xcom_push(key=stock, value=article_data)
     
-# Testing
-stocks = ['aapl']
-for stock in stocks:
-    article_data = get_new_article_data(stock)
+# # Testing
+# stocks = ['aapl']
+# for stock in stocks:
+#     article_data = get_new_article_data(stock)
     
 
 
@@ -98,7 +98,7 @@ def article_summary(article):
     # Grab Article Data from XCOM
     # content = ti.xcom_pull(task_ids=['get_new_article_data'], key=filename)[0]['text']
     
-    # first 100 characters due to size error
+    # TODO: first 100 characters due to size error
     # Token indices sequence length is longer than the specified maximum sequence length for this model (4191 > 1024). Running this sequence through the model will result in indexing errors
     content = article['content'][0:100]
     
@@ -116,19 +116,19 @@ def article_summary(article):
     
     return summary
 
-# Testing
-article = article_data[0]
-for i, article in enumerate(article_data):
-    # Get Summary
-    # summary = article_summary(article)
+# # Testing
+# article = article_data[0]
+# for i, article in enumerate(article_data):
+#     # Get Summary
+#     # summary = article_summary(article)
     
-    # Add summary to article dictionary
-    # article_data[i]['bart_summary'] = summary
+#     # Add summary to article dictionary
+#     # article_data[i]['bart_summary'] = summary
     
-    # Get Sentiment
-    probs = get_sentiment(summary)
-    # Add sentiment to article dictionary
-    article_data[i]['finbert_sentiment'] = probs
+#     # Get Sentiment
+#     probs = get_sentiment(summary)
+#     # Add sentiment to article dictionary
+#     article_data[i]['finbert_sentiment'] = probs
     
     
 
@@ -180,8 +180,8 @@ def push_summarized_data(stock, article_data):
     
     print(f'{file_name} Uploaded to S3')
     
-# TESTING
-push_summarized_data(stock, article_data)
+# # TESTING
+# push_summarized_data(stock, article_data)
 
 
 if __name__=='__main__':
@@ -190,26 +190,31 @@ if __name__=='__main__':
     stocks = ['aapl']
     # For each stock
     for stock in stocks:
-        print(f'Stock: {stock}')
-        start_time = time.time()
+        try:
+            print(f'Stock: {stock}')
+            start_time = time.time()
 
-        article_data = get_new_article_data(stock)
-        
-        # for each article
-        for i, article in enumerate(article_data):
-            # Get Summary
-            summary = article_summary(article)
+            article_data = get_new_article_data(stock)
             
-            # Add summary to article dictionary
-            article_data[i]['bart_summary'] = summary
-            
-            # Get Sentiment
-            probs = get_sentiment(summary)
-            # Add sentiment to article dictionary
-            article_data[i]['sentiment'] = probs
-            
-        # Push Data to S3
-        push_summarized_data(stock, article_data)
+            # for each article
+            for i, article in enumerate(article_data):
+                # Get Summary
+                summary = article_summary(article)
+                
+                # Add summary to article dictionary
+                article_data[i]['bart_summary'] = summary
+                
+                # Get Sentiment
+                probs = get_sentiment(summary)
+                # Add sentiment to article dictionary
+                article_data[i]['sentiment'] = probs
+                
+            # Push Data to S3
+            push_summarized_data(stock, article_data)
+
+        except Exception as e:
+            print(f'Error during processing for {stock}')
+            print(str(e))
         
         print(f"Time to complete: {(time.time() - start_time)} seconds")
         
