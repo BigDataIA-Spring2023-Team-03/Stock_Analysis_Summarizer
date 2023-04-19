@@ -9,6 +9,9 @@ analysis_pipeline_local.py
 # venv
 stock_env
 
+# Snowflake
+secrets.toml
+
 # jv
 JV
 Notes.txt
