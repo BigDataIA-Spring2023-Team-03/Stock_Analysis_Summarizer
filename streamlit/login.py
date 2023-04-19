@@ -3,10 +3,38 @@ import sqlite3
 from cryptography.fernet import Fernet
 import os
 from datetime import datetime
+import snowflake.connector
 
-# Set up SQLite connection
-conn = sqlite3.connect('userinfo.db')
+# Snowflake
+# Initialize connection.
+# Uses st.cache_resource to only run once.
+@st.cache_resource
+def init_connection():
+    return snowflake.connector.connect(
+        **st.secrets["snowflake"], client_session_keep_alive=True
+    )
+
+conn = init_connection()
 c = conn.cursor()
+
+# Perform query.
+# Uses st.cache_data to only rerun when the query changes or after 10 min.
+@st.cache_data(ttl=600)
+def run_query(query):
+    with conn.cursor() as cur:
+        cur.execute(query)
+        return cur.fetchall()
+
+rows = run_query("SELECT * from users;")
+
+# Print results.
+for row in rows:
+    st.write(f"{row[0]} has a :{row[1]}:")
+
+
+# # Set up SQLite connection
+# conn = sqlite3.connect('userinfo.db')
+# c = conn.cursor()
 
 # Cryptograph setup ~ unique key
 key_file = 'key.key'
@@ -24,14 +52,15 @@ def encrypt_password(password):
     encrypted_password = cipher_suite.encrypt(password.encode())
     return encrypted_password
 
-# decrypt pqssword
+# decrypt password
 def decrypt_password(encrypted_password):
     decrypted_password = cipher_suite.decrypt(encrypted_password).decode()
     return decrypted_password
 
 # Check esisting user
-def user_exists(username):
-    c.execute("SELECT * FROM users WHERE username=?", (username,))
+def user_exists(email):
+    print(f"SELECT * FROM users WHERE email='{email}'")
+    c.execute(f"SELECT * FROM users WHERE email='{email}'")
     result = c.fetchone()
     if result:
         return True
@@ -39,19 +68,22 @@ def user_exists(username):
         return False
 
 #Add new user to db
-def add_user(username, password):
+def add_user(email, password):
     encrypted_password = encrypt_password(password)
-    c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, encrypted_password))
+    # TODO: Fix encryption for Snowflake
+    # print(type(encrypted_password))
+    c.execute(f"INSERT INTO users (email, password) VALUES ('{email}', '{password}')")
     conn.commit()
 
 #Check creds 
-def valid_login(username, password):
-    c.execute("SELECT * FROM users WHERE username=?", (username,))
+def valid_login(email, password):
+    c.execute(f"SELECT * FROM users WHERE email='{email}'")
     result = c.fetchone()
     if result:
         encrypted_password = result[1]
         decrypted_password = decrypt_password(encrypted_password)
-        if password == decrypted_password:
+        # if password == decrypted_password:
+        if password == encrypted_password:
             return True
         else:
             return False
@@ -73,40 +105,40 @@ choice = st.sidebar.selectbox("Menu", menu)
 if choice == "Login":
     st.subheader("Login")
 
-    username = st.text_input("Username")
+    email = st.text_input("email")
     password = st.text_input("Password", type='password')
 
     if st.button("Login"):
-        if valid_login(username, password):
-            st.success("Logged in as {}".format(username))
-            log_activity("{} logged in".format(username))
+        if valid_login(email, password):
+            st.success("Logged in as {}".format(email))
+            log_activity("{} logged in".format(email))
 
-            st.session_state['logged_in_user'] = username
+            st.session_state['logged_in_user'] = email
         else:
             st.warning("Invalid login credentials")
-            log_activity("{} failed to log in with username: {} and password: {}".format(username, username, password))
+            log_activity("{} failed to log in with email: {} and password: {}".format(email, email, password))
 
 elif choice == "Signup":
     st.subheader("Signup")
 
-    new_username = st.text_input("Username")
+    new_email = st.text_input("email")
     new_password = st.text_input("Password", type='password')
 
     if st.button("Signup"):
-        if not user_exists(new_username):
-            add_user(new_username, new_password)
+        if not user_exists(new_email):
+            add_user(new_email, new_password)
             st.success("User created successfully")
-            log_activity("{} signed up".format(new_username))
+            log_activity("{} signed up".format(new_email))
         else:
             st.warning("User already exists")
-            log_activity("{} failed to sign up".format(new_username))
+            log_activity("{} failed to sign up".format(new_email))
 
 elif choice == "Logout":
     if 'logged_in_user' in st.session_state:
-        username = st.session_state['logged_in_user']
+        email = st.session_state['logged_in_user']
         del st.session_state['logged_in_user']
         st.success("Logged out successfully")
-        log_activity("{} logged out".format(username))
+        log_activity("{} logged out".format(email))
     else:
         st.warning("You are not logged in")
 
