@@ -26,3 +26,6 @@ Jared logged in
 2023-04-18 23:25:44 - test failed to log in with email: test and password: test
 2023-04-18 23:38:23 - test signed up
 2023-04-19 17:33:42 - test signed up
+2023-04-19 22:17:05 - abc failed to log in with email: abc and password: abc
+2023-04-19 22:17:44 - abc signed up
+2023-04-19 22:19:49 - test2 signed up

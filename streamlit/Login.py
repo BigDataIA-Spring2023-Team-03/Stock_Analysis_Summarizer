@@ -4,6 +4,7 @@ from cryptography.fernet import Fernet
 import os
 from datetime import datetime
 import snowflake.connector
+from streamlit_extras.switch_page_button import switch_page
 
 # Snowflake
 # Initialize connection.
@@ -17,19 +18,20 @@ def init_connection():
 conn = init_connection()
 c = conn.cursor()
 
+# TESTING
 # Perform query.
 # Uses st.cache_data to only rerun when the query changes or after 10 min.
-@st.cache_data(ttl=600)
-def run_query(query):
-    with conn.cursor() as cur:
-        cur.execute(query)
-        return cur.fetchall()
+# @st.cache_data(ttl=600)
+# def run_query(query):
+#     with conn.cursor() as cur:
+#         cur.execute(query)
+#         return cur.fetchall()
 
-rows = run_query("SELECT * from users;")
+# rows = run_query("SELECT * from users;")
 
-# Print results.
-for row in rows:
-    st.write(f"{row[0]} has a :{row[1]}:")
+# # Print results.
+# for row in rows:
+#     st.write(f"{row[0]} has a :{row[1]}:")
 
 
 # # Set up SQLite connection
@@ -105,7 +107,7 @@ choice = st.sidebar.selectbox("Menu", menu)
 if choice == "Login":
     st.subheader("Login")
 
-    email = st.text_input("email")
+    email = st.text_input("Email")
     password = st.text_input("Password", type='password')
 
     if st.button("Login"):
@@ -114,6 +116,9 @@ if choice == "Login":
             log_activity("{} logged in".format(email))
 
             st.session_state['logged_in_user'] = email
+
+            # Move user to main page
+            switch_page("Portfolio_Uploader")
         else:
             st.warning("Invalid login credentials")
             log_activity("{} failed to log in with email: {} and password: {}".format(email, email, password))
@@ -131,6 +136,8 @@ elif choice == "Signup":
             add_user(new_email, new_password, service_plan, current_time)
             st.success("User created successfully")
             log_activity("{} signed up".format(new_email))
+            # Move user to main page
+            switch_page("Portfolio_Uploader")
         else:
             st.warning("User already exists")
             log_activity("{} failed to sign up".format(new_email))
