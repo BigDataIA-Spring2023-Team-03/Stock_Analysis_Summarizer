@@ -148,13 +148,17 @@ def get_new_article_data(stock):
                         if new_date_str not in unique_publish_date:
                             unique_publish_date.append(new_date_str)
 
+                        # Turn summary from seeking_alpha into one string
+                        summary_from_seeking_alpha = res['data']['attributes']['summary']
+                        summary_from_seeking_alpha = ' '.join(summary_from_seeking_alpha)
+
                         # print(res)
                         data = {
                             'article_id': id,
                             'title': res['data']['attributes']['title'],
                             'publish_date': res['data']['attributes']['publishOn'],
-                            'summary_from_seeking_alpha': res['data']['attributes']['summary'],
-                            'content': res['data']['attributes']['content']
+                            'summary_from_seeking_alpha': summary_from_seeking_alpha
+                            # 'content': res['data']['attributes']['content']
                         }
                         # print(id + ':::: ' + str(data))
                         article_data.append(data)
@@ -167,9 +171,9 @@ def article_summary(article):
     # Grab Article Data from XCOM
     # content = ti.xcom_pull(task_ids=['get_new_article_data'], key=filename)[0]['text']
 
-    # TODO: first 100 characters due to size error
+    # Grab Seeking Alpha summary --> content too big for summarization
     # Token indices sequence length is longer than the specified maximum sequence length for this model (4191 > 1024). Running this sequence through the model will result in indexing errors
-    content = article['content'][0:100]
+    content = article['summary_from_seeking_alpha']
 
     # Summarize
     summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
@@ -201,8 +205,7 @@ def get_sentiment(summary):
     probs = logits.softmax(dim=1)
 
     # Parse out predicted probabilities
-    probs = probs.detach().numpy()[
-        0]  # convert to numpy array and retrieve first element (since we only have one input text)
+    probs = probs.detach().numpy()[0]  # convert to numpy array and retrieve first element (since we only have one input text)
     positive_prob = probs[0]  # probability for positive sentiment
     negative_prob = probs[1]  # probability for negative sentiment
     neutral_prob = probs[2]  # probability for neutral sentiment
@@ -217,7 +220,7 @@ def get_sentiment(summary):
 # Push Results to S3
 def push_summarized_data(stock, date, article_data):
     # Convert the list of dictionaries to a JSON string
-    json_data = json.dumps(str(article_data))
+    json_data = json.dumps(article_data, indent=4, default=str)
 
     # %Y-%m-%d %H:%M:%S
     # current_time = datetime.datetime.now().strftime("%Y_%m_%d")

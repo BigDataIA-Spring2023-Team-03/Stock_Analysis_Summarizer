@@ -48,7 +48,7 @@ dag = DAG(
     default_args=default_args,
     description='Fetches Article from Seeking Alpha that were written since the last run (1 day)',
     schedule_interval=timedelta(days=1),
-    # params=user_input
+    params={"run_type": ""}
 )
 
 # TESTING
@@ -151,16 +151,21 @@ def get_new_article_data(stock, run):
                         new_date_str = date_obj.strftime('%m_%d_%Y')
                         if new_date_str not in unique_publish_date:
                             unique_publish_date.append(new_date_str)
+
+                        # Turn summary from seeking_alpha into one string
+                        summary_from_seeking_alpha = res['data']['attributes']['summary']
+                        summary_from_seeking_alpha = ' '.join(summary_from_seeking_alpha)
                         
                         # print(res)
                         data = {
                             'article_id': id,
                             'title': res['data']['attributes']['title'],
                             'publish_date': res['data']['attributes']['publishOn'],
-                            'summary_from_seeking_alpha': res['data']['attributes']['summary'],
-                            'content': res['data']['attributes']['content']
+                            'summary_from_seeking_alpha': summary_from_seeking_alpha
+                            # 'content': res['data']['attributes']['content']
                         }
-                        # print(id + ':::: ' + str(data))
+                        # TESTING
+                        print(data)
                         article_data.append(data)
     return article_data, unique_publish_date
     # Push to XCOM
@@ -178,9 +183,9 @@ def article_summary(article):
     # Grab Article Data from XCOM
     # content = ti.xcom_pull(task_ids=['get_new_article_data'], key=filename)[0]['text']
     
-    # TODO: first 100 characters due to size error
+    # Grab Seeking Alpha summary --> content too big for summarization
     # Token indices sequence length is longer than the specified maximum sequence length for this model (4191 > 1024). Running this sequence through the model will result in indexing errors
-    content = article['content'][0:100]
+    content = article['summary_from_seeking_alpha']
     
     # Summarize
     summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
@@ -247,8 +252,13 @@ def get_sentiment(summary):
 
 # Push Results to S3
 def push_summarized_data(stock, date, article_data):
-    # Convert the list of dictionaries to a JSON string
-    json_data = json.dumps(str(article_data))
+    # TESTING
+    print(article_data)
+    
+    # DONT NEED - Convert the list of dictionaries to a JSON string
+    json_data = json.dumps(article_data, indent=4, default=str)
+    # TESTING
+    print(json_data)
     
     # %Y-%m-%d %H:%M:%S
     # current_time = datetime.datetime.now().strftime("%Y_%m_%d")
@@ -315,7 +325,7 @@ def main(**kwargs):
 # )
 
 # TESTING
-stocks = ['aapl']
+stocks = ['tsla']
 # TOP 10 stocks in SP500 by index weight:
 # stocks = ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOGL', 'BRK.B', 'GOOG', 'TSLA', 'UNH', 'META']
 
