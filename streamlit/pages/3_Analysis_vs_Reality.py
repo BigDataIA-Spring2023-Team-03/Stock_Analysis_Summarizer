@@ -8,7 +8,15 @@ import plotly.graph_objs as go
 st.set_page_config(page_title='Stock Price Dashboard', page_icon=':chart_with_upwards_trend:', layout='wide', initial_sidebar_state='expanded')
 st.title('Stock Price Dashboard')
 
+# TODO: Display the tickers a user has run before using logging table in Snowflake
+# f"""
+# SELECT *
+# FROM LOGGING
+# where email = '{email}';
+# """
 ticker = st.text_input('Enter stock ticker (e.g. AAPL, NVDA):')
+
+# TODO: Get the run_dates for those analyses using logging in snowflake
 
 options = ['1 month', '6 months', '1 year', 'Full history', 'Custom']
 selected_option = st.selectbox('Select time range:', options)

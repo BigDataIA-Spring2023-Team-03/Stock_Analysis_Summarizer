@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import openpyxl
+from datetime import datetime
 # import os
 # import requests
 
@@ -20,6 +21,15 @@ def add_bg_from_url():
      )
 
 add_bg_from_url() 
+
+
+#Add new user to db
+def add_run(email, stock, service_plan, result):
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    c.execute(f"""INSERT INTO logging (email, run_date, stock, service_plan, result) 
+              VALUES ('{email}', '{current_time}', '{stock}', '{service_plan}', '{result}')""")
+    conn.commit()
+
 
 # Title of the page
 st.title("Stock Analysis Summarizer")
@@ -61,6 +71,18 @@ run_analysis = st.checkbox('Run Analysis')
 if run_analysis:
     # TODO:
     st.write('INSERT INTO SNOWFLAKE AND TRIGGER DAG')
+
+
+    for stock in st.session_state['portfolio']:
+        st.write(stock)
+        service_plan = 'test'
+        result = 'test'
+        add_run(st.session_state['logged_in_user'], stock, service_plan, result)
+
+    # result = ['BUY', 'SELL', 'NO DATA FOUND', 'ERROR]
+
+    # Call the DAG via FastAPI
+    
 
 
 # # If the user has uploaded a file

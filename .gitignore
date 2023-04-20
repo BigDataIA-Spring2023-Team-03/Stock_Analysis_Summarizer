@@ -11,6 +11,7 @@ stock_env
 
 # Snowflake
 secrets.toml
+secrets copy.toml
 
 # jv
 JV
