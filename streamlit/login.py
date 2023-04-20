@@ -68,11 +68,11 @@ def user_exists(email):
         return False
 
 #Add new user to db
-def add_user(email, password):
+def add_user(email, password, service_plan, current_time):
     encrypted_password = encrypt_password(password)
     # TODO: Fix encryption for Snowflake
     # print(type(encrypted_password))
-    c.execute(f"INSERT INTO users (email, password) VALUES ('{email}', '{password}')")
+    c.execute(f"INSERT INTO users (email, password, service_plan, signup_date) VALUES ('{email}', '{password}', '{service_plan}', '{current_time}')")
     conn.commit()
 
 #Check creds 
@@ -123,10 +123,12 @@ elif choice == "Signup":
 
     new_email = st.text_input("email")
     new_password = st.text_input("Password", type='password')
+    service_plan  = st.selectbox('Choose a Service Plan?', ('Free', 'Gold', 'Premium'))
 
     if st.button("Signup"):
         if not user_exists(new_email):
-            add_user(new_email, new_password)
+            current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            add_user(new_email, new_password, service_plan, current_time)
             st.success("User created successfully")
             log_activity("{} signed up".format(new_email))
         else:
