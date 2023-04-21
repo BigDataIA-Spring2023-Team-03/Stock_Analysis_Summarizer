@@ -6,7 +6,7 @@ COPY main.py /app/
 
 COPY requirements.txt /app/
 
-COPY pages /app/pages
+COPY components /app/pages
 
 COPY Logging /app/Logging
 
