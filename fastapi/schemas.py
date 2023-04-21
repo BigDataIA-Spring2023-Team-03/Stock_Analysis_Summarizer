@@ -10,3 +10,7 @@ class UserRegisterSchema(BaseModel):
 class UserLoginSchema(BaseModel):
     email: EmailStr
     password: str
+
+class ServicePlan(BaseModel):
+    service_plan: str
+    email: str

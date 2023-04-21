@@ -8,7 +8,7 @@ def register():
     email = st.text_input('Email')
     password = st.text_input('Password', type='password')
     confirm_password = st.text_input('Confirm Password', type='password')
-    service_plan = st.selectbox('Service Plan', ['Basic', 'Premium', 'Enterprise'])
+    service_plan = st.selectbox('Service Plan', ['FREE', 'GOLD', 'PLATINUM'])
     admin_flag = st.checkbox('Admin Flag')
     if password == confirm_password and st.button('Register'):
         data = {'email': email, 'password': password, 'service_plan': service_plan, 'admin_flag': admin_flag}

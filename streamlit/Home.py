@@ -1,5 +1,5 @@
 import streamlit as st
-from components import login, register, portfolio_uploader, admin_dashboard, analysis_vs_reality
+from components import login, register, portfolio_uploader, admin_dashboard, analysis_vs_reality, upgrade_plan
 import requests
 
 # BACKGROUND
@@ -24,17 +24,26 @@ add_bg_from_url()
 if 'access_token' not in st.session_state:
     st.session_state.access_token = ''
 
+if 'email' not in st.session_state:
+    st.session_state.email = ''
+
 # Define a function to render the sidebar
 def render_sidebar():
     st.sidebar.title("Navigation")
     if st.session_state.access_token == '':
         selected_page = st.sidebar.selectbox("Select a page", ["Login", "Register"])
     else:
-        selected_page = st.sidebar.selectbox("Select a page", ["Portfolio Uploader", "Analysis vs Reality", "Admin Dashboard"])
+        selected_page = st.sidebar.selectbox("Select a page", ["Portfolio Uploader", "Analysis vs Reality", "Admin Dashboard", "Upgrade Plan"])
         response = requests.get("http://localhost:8000/user_info", params={'token': st.session_state.access_token})
-        email = response.json().get('email')
+        if response.status_code == 200:
+            email = response.json().get('email')
         if email:
+            st.session_state.email = email
             st.sidebar.write(f"Logged in as: {email}")
+            res = requests.get("http://localhost:8000/user_data", params={'email': st.session_state.email})
+            if res.status_code == 200:
+                calls_left = res.json().get('calls_left')
+                st.sidebar.write(f"API Calls left: {calls_left}")
         if st.sidebar.button('Logout'):
             st.session_state.access_token = ''
             st.experimental_rerun()
@@ -49,6 +58,9 @@ if selected_page == 'Login':
 
 elif selected_page == 'Register':
     register.register()
+
+elif selected_page == 'Upgrade Plan':
+    upgrade_plan.upgrade_plan(st.session_state.email)
 
 elif selected_page == 'Portfolio Uploader':
     portfolio_uploader.portfolio_uploader()

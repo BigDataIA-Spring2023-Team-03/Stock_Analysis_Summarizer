@@ -28,3 +28,16 @@ def login(user: schemas.UserLoginSchema):
         return auth.signJWT(user.email)
     else:
         raise HTTPException(status_code=401, detail='Invalid username and/or password')
+
+@app.post('/update_plan', tags=['user'])
+def update_serviceplan(user: schemas.ServicePlan):
+    print(user)
+    if user:
+        return db_util.update_serviceplan(user.service_plan, user.email)
+    else:
+        raise HTTPException(status_code=401, detail='Error while updating the service plan')
+
+@app.get("/user_data", tags=['user'])
+async def read_main(email: str):
+    if email and not email == '':
+        return db_util.get_user_data(email)
