@@ -2,6 +2,24 @@ import streamlit as st
 from components import login, register, portfolio_uploader, admin_dashboard, analysis_vs_reality
 import requests
 
+# BACKGROUND
+def add_bg_from_url():
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background-image: url("https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1057996634/image_1057996634.jpg?io=getty-c-w1280.jpg");
+             background-attachment: fixed;
+             background-size: cover
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
+
+add_bg_from_url()
+
+
 # Check if the user is logged in
 if 'access_token' not in st.session_state:
     st.session_state.access_token = ''
@@ -33,13 +51,10 @@ elif selected_page == 'Register':
     register.register()
 
 elif selected_page == 'Portfolio Uploader':
-    # portfolio_uploader.portfolio_uploader()
-    pass
+    portfolio_uploader.portfolio_uploader()
 
 elif selected_page == 'Analysis vs Reality':
-    # portfolio_uploader.portfolio_uploader()
-    pass
+    analysis_vs_reality.analysis_vs_reality()
 
 elif selected_page == 'Admin Dashboard':
-    # portfolio_uploader.portfolio_uploader()
-    pass
+    admin_dashboard.admin_dashboard()
