@@ -4,6 +4,7 @@ import openpyxl
 from datetime import datetime
 # import os
 # import requests
+import snowflake.connector
 
 # Adding a wallpaper to the web application
 def add_bg_from_url():
@@ -21,6 +22,18 @@ def add_bg_from_url():
      )
 
 add_bg_from_url() 
+
+# Snowflake
+# Initialize connection.
+# Uses st.cache_resource to only run once.
+@st.cache_resource
+def init_connection():
+    return snowflake.connector.connect(
+        **st.secrets["snowflake"], client_session_keep_alive=True
+    )
+
+conn = init_connection()
+c = conn.cursor()
 
 
 #Add new user to db
@@ -64,6 +77,11 @@ if manual_upload:
 
     st.write(st.session_state['portfolio'])
 
+    # Clear portfolio
+    clear = st.checkbox('Clear Portfolio')
+    if clear:
+        st.session_state['portfolio'] = pd.DataFrame(columns=['Stock_Ticker'])
+
 
 # Run Analysis
 run_analysis = st.checkbox('Run Analysis')
@@ -72,16 +90,18 @@ if run_analysis:
     # TODO:
     st.write('INSERT INTO SNOWFLAKE AND TRIGGER DAG')
 
-
-    for stock in st.session_state['portfolio']:
-        st.write(stock)
+    # iterate through the values in the 'Stock_Ticker' column using iteritems()
+    for index, value in st.session_state['portfolio']['Stock_Ticker'].iteritems():
+        st.write(value)
         service_plan = 'test'
         result = 'test'
-        add_run(st.session_state['logged_in_user'], stock, service_plan, result)
+        # add_run(st.session_state['logged_in_user'], stock, service_plan, result)
+        add_run('test_user', value, service_plan, result)
 
-    # result = ['BUY', 'SELL', 'NO DATA FOUND', 'ERROR]
+        # TODO: Call the DAG via FastAPI
 
-    # Call the DAG via FastAPI
+        # Possible results
+        # result = ['BUY', 'SELL', 'NO DATA FOUND', 'ERROR]
     
 
 
