@@ -29,7 +29,7 @@ def login(user: schemas.UserLoginSchema):
     else:
         raise HTTPException(status_code=401, detail='Invalid username and/or password')
 
-@app.post('/update_plan', tags=['user'])
+@app.post('/update_plan', tags=['user'], status_code=status.HTTP_200_OK, dependencies=[Depends(auth_bearer.JWTBearer())])
 def update_serviceplan(user: schemas.ServicePlan):
     print(user)
     if user:

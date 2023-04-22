@@ -35,6 +35,7 @@ def render_sidebar():
     else:
         selected_page = st.sidebar.selectbox("Select a page", ["Portfolio Uploader", "Analysis vs Reality", "Admin Dashboard", "Upgrade Plan"])
         response = requests.get("http://localhost:8000/user_info", params={'token': st.session_state.access_token})
+        email = ''
         if response.status_code == 200:
             email = response.json().get('email')
         if email:
@@ -46,6 +47,7 @@ def render_sidebar():
                 st.sidebar.write(f"API Calls left: {calls_left}")
         if st.sidebar.button('Logout'):
             st.session_state.access_token = ''
+            st.session_state.email = ''
             st.experimental_rerun()
     return selected_page
 
