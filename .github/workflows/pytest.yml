@@ -8,6 +8,10 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
 
+    env:
+      secret: ${{ secrets.secret }}
+      algorithm: ${{ secrets.algorithm }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -23,4 +27,6 @@ jobs:
         pip install -r fastapi/requirements.txt
 
     - name: Run unit tests
+      env:
+        PYTHONPATH: ./fastapi
       run: pytest fastapi/test_apis.py
