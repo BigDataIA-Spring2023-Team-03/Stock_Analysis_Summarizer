@@ -25,7 +25,7 @@ def update_service_plan(email, updated_plan: str, l):
             st.session_state.access_token = ''
             st.session_state.email = ''
             st.experimental_rerun()
-        else:
+        elif response.status_code == 403:
             st.error('Session ended, please login back')
             time.sleep(1)
             st.session_state.access_token = ''
