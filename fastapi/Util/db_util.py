@@ -52,6 +52,12 @@ def update_serviceplan(service_plan: str, email: str):
             f"UPDATE API_CALLS SET CALLS_LEFT = '{calls_left}' WHERE email = '{email}'"
         )
 
+def delete_user(email: str):
+    with db_conn.get_conn().cursor() as cur:
+        cur.execute(
+            f"DELETE FROM USERS WHERE email = '{email}'"
+        )
+
 def check_user(email: str, password: str):
     conn = db_conn.get_conn()
     query = f"SELECT email, password FROM USERS  WHERE email = '{email}'"
