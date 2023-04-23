@@ -28,7 +28,7 @@ add_bg_from_url()
 def get_ticker(company_name):
     url = "https://api.openai.com/v1/engines/text-davinci-002/completions"
     Ticker = {
-        "prompt": "Q: What is the ticker for" + " " + company_name + "?nA:",
+        "prompt": "Q: What is the ticker for" + " " + company_name + "?",
         "temperature": 0.7,
         "max_tokens": 50,
         "stop": None
