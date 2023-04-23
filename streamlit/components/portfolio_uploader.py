@@ -37,7 +37,7 @@ def get_ticker(company_name):
     # set up the API headers
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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"
+        "Authorization": "Bearer YOUR_KEY"
     }
 
     # send the API request
