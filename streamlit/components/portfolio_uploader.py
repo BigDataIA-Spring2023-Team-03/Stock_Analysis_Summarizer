@@ -7,23 +7,6 @@ from datetime import datetime
 # import snowflake.connector
 from Util import db_util
 
-# Function to add a wallpaper to the web application
-def add_bg_from_url():
-    st.markdown(
-         f"""
-         <style>
-         .stApp {{
-             background-image: url("https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1057996634/image_1057996634.jpg?io=getty-c-w1280.jpg");
-             background-attachment: fixed;
-             background-size: cover
-         }}
-         </style>
-         """,
-         unsafe_allow_html=True
-     )
-
-add_bg_from_url() 
-
 # Function to ask a companies ticker symbol
 def get_ticker(company_name):
     url = "https://api.openai.com/v1/engines/text-davinci-002/completions"
@@ -67,80 +50,81 @@ def add_data(ticker):
 
 ##############################################################################################################################
 
-# Title of the page
-st.title("Stock Analysis Summarizer")
+def portfolio_uploader():
+    # Title of the page
+    st.title("Stock Analysis Summarizer")
 
-# Uploading User Stock Portfolio
-excel_upload = st.checkbox('Upload Portfolio from File')
-if excel_upload:
-    file = st.file_uploader("**Upload your Stock Portfolio**", type=["xlsx"])
+    # Uploading User Stock Portfolio
+    excel_upload = st.checkbox('Upload Portfolio from File')
+    if excel_upload:
+        file = st.file_uploader("**Upload your Stock Portfolio**", type=["xlsx"])
 
-# Initialize
-if "portfolio" not in st.session_state:
-    st.session_state['portfolio'] = pd.DataFrame(columns=['Stock_Ticker'])
+    # Initialize
+    if "portfolio" not in st.session_state:
+        st.session_state['portfolio'] = pd.DataFrame(columns=['Stock_Ticker'])
 
-# Manually add tickers
-manual_upload = st.checkbox('Manually Upload Portfolio')
+    # Manually add tickers
+    manual_upload = st.checkbox('Manually Upload Portfolio')
 
-if manual_upload:
-    # Get companies ticker symbol from ChatGPT
-    company_name = st.text_input("Enter Company Name for Ticker Symbol")
-    if company_name:
-        get_ticker(company_name)
+    if manual_upload:
+        # Get companies ticker symbol from ChatGPT
+        company_name = st.text_input("Enter Company Name for Ticker Symbol")
+        if company_name:
+            get_ticker(company_name)
 
-    # Adding ticker manually
-    portfolio = pd.DataFrame(columns=['Stock_Ticker'])
+        # Adding ticker manually
+        portfolio = pd.DataFrame(columns=['Stock_Ticker'])
 
-    # Only can run 5 stocks at a time
-    if st.session_state['portfolio'].shape[0] <= 4:
+        # Only can run 5 stocks at a time
+        if st.session_state['portfolio'].shape[0] <= 4:
 
-        ticker = st.text_input("Enter a ticker:")
+            ticker = st.text_input("Enter a ticker:")
 
-        if ticker:
-            # Add Validation check for the ticker from Yahoo finanace
-            if validate_ticker(ticker):
-                st.write(f"{ticker} is a valid ticker symbol.")
-                # Adding the ticker manually
-                add_data(ticker)
-                st.session_state['portfolio'] = st.session_state['portfolio']
-            else:
-                st.write(f"{ticker} is not a valid ticker symbol.")
-    else:
-        st.error('You can only run 5 stocks at a time!')
-
-
-    # Remove a ticker from the portfolio
-    for i, ticker in enumerate(st.session_state['portfolio']['Stock_Ticker']):
-        if st.button(f"Remove {ticker}", key=f"remove_{i}"):
-            st.session_state['portfolio'] = st.session_state['portfolio'].drop(index=i).reset_index(drop=True)
-    
-    # Display portfolio after removal
-    st.write(st.session_state['portfolio'])
-
-#############################################################################################################################
-
-# Run Analysis
-run_analysis = st.checkbox('Run Analysis')
-
-if run_analysis:
-    # TODO:
-    st.write('INSERT INTO SNOWFLAKE AND TRIGGER DAG')
-
-    # iterate through the values in the 'Stock_Ticker' column using iteritems()
-    for index, value in st.session_state['portfolio']['Stock_Ticker'].iteritems():
-        st.write(value)
-        service_plan = 'test'
-        result = 'test'
-        # add_run(st.session_state['logged_in_user'], stock, service_plan, result)
-        # add_run('test_user', value, service_plan, result)
-        db_util.add_stock_run('test_user', value, service_plan, result)
+            if ticker:
+                # Add Validation check for the ticker from Yahoo finanace
+                if validate_ticker(ticker):
+                    st.write(f"{ticker} is a valid ticker symbol.")
+                    # Adding the ticker manually
+                    add_data(ticker)
+                    st.session_state['portfolio'] = st.session_state['portfolio']
+                else:
+                    st.write(f"{ticker} is not a valid ticker symbol.")
+        else:
+            st.error('You can only run 5 stocks at a time!')
 
 
+        # Remove a ticker from the portfolio
+        for i, ticker in enumerate(st.session_state['portfolio']['Stock_Ticker']):
+            if st.button(f"Remove {ticker}", key=f"remove_{i}"):
+                st.session_state['portfolio'] = st.session_state['portfolio'].drop(index=i).reset_index(drop=True)
 
-        # TODO: Call the DAG via FastAPI
+        # Display portfolio after removal
+        st.write(st.session_state['portfolio'])
 
-        # Possible results
-        # result = ['BUY', 'SELL', 'NO DATA FOUND', 'ERROR]
+    #############################################################################################################################
+
+    # Run Analysis
+    run_analysis = st.checkbox('Run Analysis')
+
+    if run_analysis:
+        # TODO:
+        st.write('INSERT INTO SNOWFLAKE AND TRIGGER DAG')
+
+        # iterate through the values in the 'Stock_Ticker' column using iteritems()
+        for index, value in st.session_state['portfolio']['Stock_Ticker'].iteritems():
+            st.write(value)
+            service_plan = 'test'
+            result = 'test'
+            # add_run(st.session_state['logged_in_user'], stock, service_plan, result)
+            # add_run('test_user', value, service_plan, result)
+            db_util.add_stock_run('test_user', value, service_plan, result)
+
+
+
+            # TODO: Call the DAG via FastAPI
+
+            # Possible results
+            # result = ['BUY', 'SELL', 'NO DATA FOUND', 'ERROR]
         
 
 
