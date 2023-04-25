@@ -5,7 +5,7 @@ from dbutils.pooled_db import PooledDB
 conn_params = {
     'account': 'sh13682.ca-central-1.aws',
     'user': 'DAMG7245_SA',
-    'password': 'final_project',
+    'password': 'DAMG7245_final',
     'database': 'STOCK_ANALYSIS_APP',
     'schema': 'PUBLIC',
     'warehouse': 'compute_wh',
