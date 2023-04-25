@@ -5,7 +5,7 @@ from dbutils.pooled_db import PooledDB
 conn_params = {
     'account': 'sh13682.ca-central-1.aws',
     'user': 'DAMG7245_SA',
-    'password': 'final_project',
+    'password': '<password>',
     'database': 'STOCK_ANALYSIS_APP',
     'schema': 'PUBLIC',
     'warehouse': 'compute_wh',
@@ -17,11 +17,10 @@ conn_params = {
 def create_conn():
     return snowflake.connector.connect(**conn_params)
 
-# Create a Snowflake connection pool
 pool = PooledDB(
     creator=create_conn,
-    maxconnections=10,  # set the maximum number of connections
-    maxcached=5        # set the maximum number of idle connections
+    maxconnections=10,
+    maxcached=5
 )
 
 # Export the connection pool object
