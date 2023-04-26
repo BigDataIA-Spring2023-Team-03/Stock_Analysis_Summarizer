@@ -31,7 +31,6 @@ def login(user: schemas.UserLoginSchema):
 
 @app.post('/update_plan', tags=['user'], status_code=status.HTTP_200_OK, dependencies=[Depends(auth_bearer.JWTBearer())])
 def update_serviceplan(user: schemas.ServicePlan):
-    print(user)
     if user:
         return db_util.update_serviceplan(user.service_plan, user.email)
     else:
@@ -41,3 +40,10 @@ def update_serviceplan(user: schemas.ServicePlan):
 async def read_main(email: str):
     if email and not email == '':
         return db_util.get_user_data(email)
+
+@app.post('/update_api_calls', tags=['user'], status_code=status.HTTP_200_OK, dependencies=[Depends(auth_bearer.JWTBearer())])
+def update_api_calls(user: schemas.ApiCalls):
+    if user.email and not user.email == '':
+        return db_util.update_api_calls(user.email)
+    else:
+        raise HTTPException(status_code=401, detail='Error while updating the service plan')

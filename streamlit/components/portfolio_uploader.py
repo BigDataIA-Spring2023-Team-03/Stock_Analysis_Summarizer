@@ -14,6 +14,8 @@ import json
 # Summarization
 from transformers import pipeline, BartTokenizer
 
+from streamlit.Home import render_sidebar
+
 # DEV or PROD
 environment = 'DEV'
 if environment == 'DEV':
@@ -38,6 +40,7 @@ s3_client = boto3.client(
     aws_secret_access_key=aws_secret_access_key,
 )
 
+
 ##########################################################################
 
 # Function to ask a companies ticker symbol
@@ -53,7 +56,7 @@ def get_ticker(company_name):
     # set up the API headers
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f'Bearer {openai_api_key}' #"Bearer YOUR_KEY"
+        "Authorization": f'Bearer {openai_api_key}'  # "Bearer YOUR_KEY"
     }
 
     # send the API request
@@ -62,11 +65,12 @@ def get_ticker(company_name):
     # Exception Handeling
     if response.status_code == 200:
         data = response.json()
-        generated_text = data["choices"][0]["text"]        
+        generated_text = data["choices"][0]["text"]
         ticker_symbol = generated_text.split()
         st.write(ticker_symbol[-1])
     else:
         st.write("Error:", response.text)
+
 
 # Function to validate the ticker symbol
 def validate_ticker(ticker):
@@ -76,6 +80,7 @@ def validate_ticker(ticker):
     except:
         return False
     return True
+
 
 # Function to add ticker manually
 def add_data(ticker):
@@ -92,19 +97,21 @@ def get_analysis_data(stock):
         files = obj['Key']
         print(files)
         # Pull JSON data from each file
-        response = s3_client.get_object(Bucket = s3_bucket_name, Key = files)
+        response = s3_client.get_object(Bucket=s3_bucket_name, Key=files)
         content = response['Body']
         analysis_dataset.extend(json.loads(content.read()))
 
     return pd.DataFrame(analysis_dataset, columns=['publish_date', 'bart_summary', 'sentiment'])
 
+
 # Check DAG Status
 def check_dag_status(dag_id):
     url = f'http://{webserver}/api/v1/dags/{dag_id}/dagRuns'
-    response = requests.get(url = url, auth=('airflow2','airflow2'))
+    response = requests.get(url=url, auth=('airflow2', 'airflow2'))
     response_json = response.json()
-    state = response_json['dag_runs'][len(response_json['dag_runs'])-1]['state']
+    state = response_json['dag_runs'][len(response_json['dag_runs']) - 1]['state']
     return state
+
 
 # Get Summary of Content using Facebook BART Large CNN transformer model
 def article_summary(sentiment, aggregate_summary):
@@ -125,7 +132,13 @@ def article_summary(sentiment, aggregate_summary):
 
     return summary
 
+
 ##############################################################################################################################
+
+def update_api_calls_left():
+    st.session_state.calls_left = new_calls_left
+
+    st.experimental_rerun()
 
 def portfolio_uploader():
     # Title of the page
@@ -156,7 +169,7 @@ def portfolio_uploader():
         # Only can run 5 stocks at a time
         if st.session_state['portfolio'].shape[0] <= 4:
 
-            ticker = st.text_input("Enter a ticker:")            
+            ticker = st.text_input("Enter a ticker:")
 
             if ticker:
                 # Check if ticker already listed 
@@ -177,7 +190,6 @@ def portfolio_uploader():
                     st.error(f"{ticker} already listed.")
         else:
             st.error('You can only run 5 stocks at a time!')
-
 
         # TODO: Doesn't Work
         # Remove a ticker from the portfolio
@@ -212,10 +224,11 @@ def portfolio_uploader():
                 else:
                     # API Call to Airflow to execute process_audio_files_dag
                     data = {
-                            "dag_run_id": "",
-                            "conf": {"stocks": [value]}
-                            }
-                    response = requests.post(url = f'http://{webserver}/api/v1/dags/new_stock_article_fetcher/dagRuns', json=data, auth=('airflow2','airflow2'))
+                        "dag_run_id": "",
+                        "conf": {"stocks": [value]}
+                    }
+                    response = requests.post(url=f'http://{webserver}/api/v1/dags/new_stock_article_fetcher/dagRuns',
+                                             json=data, auth=('airflow2', 'airflow2'))
                     if response.status_code == 409:
                         st.error(f'{value} data up-to-date in S3!')
 
@@ -225,23 +238,28 @@ def portfolio_uploader():
                     starttime = time.time()
                     while check_dag_status("new_stock_article_fetcher") not in ('failed', 'success'):
                         time.sleep(10.0 - ((time.time() - starttime) % 10.0))
-                    
+
                     # IF DAG runs successfully then get the data
                     if check_dag_status("new_stock_article_fetcher") == 'success':
                         # TODO:
                         st.write('TRIGGER DAG - new stock')
 
+                data2 = {'email': st.session_state.email}
+                headers = {"Authorization": f"Bearer {st.session_state.access_token}"}
+                res2 = requests.post('http://localhost:8000/update_api_calls', json=data2, headers = headers)
+                st.session_state['calls_left'] = st.session_state.calls_left - 1
                 # Summary of results
                 # group by 'Sentiment' and get counts
-                sentiment_counts = df.groupby(['sentiment']).size().reset_index(name='count').sort_values(by='count', ascending=False)
+                sentiment_counts = df.groupby(['sentiment']).size().reset_index(name='count').sort_values(by='count',
+                                                                                                          ascending=False)
                 st.subheader(f'Article Summary for {value}')
                 st.write(sentiment_counts)
 
                 # Summarize the Positive and Negative articles
                 # st.write(df.loc[df['sentiment'] == 'positive', 'bart_summary'])
-                final_df = df.groupby(['sentiment'], as_index = False).agg({'bart_summary': ' '.join})
-                pos_summary = final_df[final_df['sentiment']=='positive']['bart_summary'].item()
-                neg_summary = final_df[final_df['sentiment']=='negative']['bart_summary'].item()
+                final_df = df.groupby(['sentiment'], as_index=False).agg({'bart_summary': ' '.join})
+                pos_summary = final_df[final_df['sentiment'] == 'positive']['bart_summary'].item()
+                neg_summary = final_df[final_df['sentiment'] == 'negative']['bart_summary'].item()
 
                 # Use Facebook BART model to summarize the aggregation of summaries
                 pos_overall_summary = article_summary('positive', pos_summary)
@@ -260,13 +278,13 @@ def portfolio_uploader():
                 # ADD THE STOCKS TO SNOWFLAKE LOGS
                 pos_overall_summary = pos_overall_summary.replace("'", "\\'")
                 neg_overall_summary = neg_overall_summary.replace("'", "\\'")
-                # st.write(st.session_state.email, value, sentiment_counts.loc[sentiment_counts['sentiment'] == 'positive', 'count'].values[0], sentiment_counts.loc[sentiment_counts['sentiment'] == 'neutral', 'count'].values[0], sentiment_counts.loc[sentiment_counts['sentiment'] == 'negative', 'count'].values[0], f"""{pos_overall_summary}""", f"""{neg_overall_summary}""")
-                # print(f"""{pos_overall_summary}""")
-                # print(type(pos_overall_summary))
-                db_util.add_stock_run(st.session_state.email, value, sentiment_counts.loc[sentiment_counts['sentiment'] == 'positive', 'count'].values[0], sentiment_counts.loc[sentiment_counts['sentiment'] == 'neutral', 'count'].values[0], sentiment_counts.loc[sentiment_counts['sentiment'] == 'negative', 'count'].values[0], pos_overall_summary, neg_overall_summary)
-
-        
-
+                db_util.add_stock_run(st.session_state.email, value,
+                                      sentiment_counts.loc[sentiment_counts['sentiment'] == 'positive', 'count'].values[
+                                          0],
+                                      sentiment_counts.loc[sentiment_counts['sentiment'] == 'neutral', 'count'].values[
+                                          0],
+                                      sentiment_counts.loc[sentiment_counts['sentiment'] == 'negative', 'count'].values[
+                                          0], pos_overall_summary, neg_overall_summary)
 
 #############################################################################################################################
 

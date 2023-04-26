@@ -27,6 +27,9 @@ if 'access_token' not in st.session_state:
 if 'email' not in st.session_state:
     st.session_state.email = ''
 
+if 'calls_left' not in st.session_state:
+    st.session_state.calls_left = None
+
 # Define a function to render the sidebar
 def render_sidebar():
     st.sidebar.title("Navigation")
@@ -44,6 +47,7 @@ def render_sidebar():
             res = requests.get("http://localhost:8000/user_data", params={'email': st.session_state.email})
             if res.status_code == 200:
                 calls_left = res.json().get('calls_left')
+                st.session_state.calls_left = calls_left
                 st.sidebar.write(f"API Calls left: {calls_left}")
         if st.sidebar.button('Logout'):
             st.session_state.access_token = ''

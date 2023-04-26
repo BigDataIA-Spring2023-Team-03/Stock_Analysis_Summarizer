@@ -14,3 +14,6 @@ class UserLoginSchema(BaseModel):
 class ServicePlan(BaseModel):
     service_plan: str
     email: str
+
+class ApiCalls(BaseModel):
+    email: str
