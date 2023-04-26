@@ -11,6 +11,9 @@ from decouple import config
 import boto3
 import json
 
+# Summarization
+from transformers import pipeline, BartTokenizer
+
 # DEV or PROD
 environment = 'DEV'
 if environment == 'DEV':
@@ -103,6 +106,25 @@ def check_dag_status(dag_id):
     state = response_json['dag_runs'][len(response_json['dag_runs'])-1]['state']
     return state
 
+# Get Summary of Content using Facebook BART Large CNN transformer model
+def article_summary(sentiment, aggregate_summary):
+    # Token text input for the Bart model, max 1024 tokens
+    # tokenizer = BartTokenizer.from_pretrained('facebook/bart-large')
+
+    # max_length = 1024
+    # tokens = tokenizer(aggregate_summary, max_length=max_length, truncation=True, return_tensors='pt')
+
+    # Summarize
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+
+    summary = summarizer(aggregate_summary[:1024], max_length=130, min_length=30, do_sample=False)
+
+    summary = summary[0]['summary_text']
+
+    print(f'Summary created for {sentiment} articles')
+
+    return summary
+
 ##############################################################################################################################
 
 def portfolio_uploader():
@@ -148,6 +170,10 @@ def portfolio_uploader():
                     else:
                         st.error(f"{ticker} is not a valid ticker symbol.")
                 else:
+                    # TODO: RUN analysis is checked, then don't show error
+                    # if run_analysis:
+                    #     pass
+                    # else:
                     st.error(f"{ticker} already listed.")
         else:
             st.error('You can only run 5 stocks at a time!')
@@ -164,78 +190,81 @@ def portfolio_uploader():
 
     #############################################################################################################################
 
-    # Run Analysis
-    run_analysis = st.checkbox('Run Analysis')
+    # Run Analysis if at least one stock is selected
+    # Only can run 5 stocks at a time
+    if st.session_state['portfolio'].shape[0] > 0:
+        run_analysis = st.checkbox('Run Analysis')
 
-    if run_analysis:
-        # TODO:
-        st.write('INSERT INTO SNOWFLAKE AND TRIGGER DAG')
+        if run_analysis:
+            # iterate through the values in the 'Stock_Ticker' column using iteritems()
+            for index, value in st.session_state['portfolio']['Stock_Ticker'].iteritems():
+                st.subheader(f'Processing - {value}:')
 
-        # iterate through the values in the 'Stock_Ticker' column using iteritems()
-        for index, value in st.session_state['portfolio']['Stock_Ticker'].iteritems():
-            st.subheader(f'Processing - {value}:')
+                # RUN OPTIONS
+                # Option 1: If Stock is part of top 10, then just grab results straight from S3
+                # TOP 10 stocks in SP500 by index weight:
+                top_10_stocks = ['aapl', 'msft', 'amzn', 'nvda', 'googl', 'brk.b', 'goog', 'tsla', 'unh', 'meta']
+                if value in top_10_stocks:
+                    df = get_analysis_data(value)
+                    st.write(df.head())
 
-            # RUN OPTIONS
-            # Option 1: If Stock is part of top 10, then just grab results straight from S3
-            # TOP 10 stocks in SP500 by index weight:
-            top_10_stocks = ['aapl', 'msft', 'amzn', 'nvda', 'googl', 'brk.b', 'goog', 'tsla', 'unh', 'meta']
-            if value in top_10_stocks:
-                df = get_analysis_data(value)
-                st.write(df.head())
+                # Option 2: If New Stock, then call new_stock_article_fetcher DAG
+                else:
+                    # API Call to Airflow to execute process_audio_files_dag
+                    data = {
+                            "dag_run_id": "",
+                            "conf": {"stocks": [value]}
+                            }
+                    response = requests.post(url = f'http://{webserver}/api/v1/dags/new_stock_article_fetcher/dagRuns', json=data, auth=('airflow2','airflow2'))
+                    if response.status_code == 409:
+                        st.error(f'{value} data up-to-date in S3!')
 
-            # Option 2: If New Stock, then call new_stock_article_fetcher DAG
-            else:
-                # API Call to Airflow to execute process_audio_files_dag
-                data = {
-                        "dag_run_id": "",
-                        "conf": {"stocks": [value]}
-                        }
-                response = requests.post(url = f'http://{webserver}/api/v1/dags/new_stock_article_fetcher/dagRuns', json=data, auth=('airflow2','airflow2'))
-                if response.status_code == 409:
-                    st.error(f'{value} data up-to-date in S3!')
+                    dag_run_id = response.json()['dag_run_id']
+                    st.write(f"Dag_run_id: {dag_run_id}")
 
-                dag_run_id = response.json()['dag_run_id']
-                st.write(f"Dag_run_id: {dag_run_id}")
+                    starttime = time.time()
+                    while check_dag_status("new_stock_article_fetcher") not in ('failed', 'success'):
+                        time.sleep(10.0 - ((time.time() - starttime) % 10.0))
+                    
+                    # IF DAG runs successfully then get the data
+                    if check_dag_status("new_stock_article_fetcher") == 'success':
+                        # TODO:
+                        st.write('TRIGGER DAG - new stock')
 
-                starttime = time.time()
-                while check_dag_status("new_stock_article_fetcher") not in ('failed', 'success'):
-                    time.sleep(10.0 - ((time.time() - starttime) % 10.0))
-                
-                # IF DAG runs successfully then get the data
-                if check_dag_status("new_stock_article_fetcher") == 'success':
-                    # TODO: 
-                    st.write('get data')
+                # Summary of results
+                # group by 'Sentiment' and get counts
+                sentiment_counts = df.groupby(['sentiment']).size().reset_index(name='count').sort_values(by='count', ascending=False)
+                st.subheader(f'Article Summary for {value}')
+                st.write(sentiment_counts)
 
-            # ADD THE STOCKS TO SNOWFLAKE LOGS
-            service_plan = 'test'
-            result = 'test'
-            db_util.add_stock_run(st.session_state.email, value, service_plan, result)
+                # Summarize the Positive and Negative articles
+                # st.write(df.loc[df['sentiment'] == 'positive', 'bart_summary'])
+                final_df = df.groupby(['sentiment'], as_index = False).agg({'bart_summary': ' '.join})
+                pos_summary = final_df[final_df['sentiment']=='positive']['bart_summary'].item()
+                neg_summary = final_df[final_df['sentiment']=='negative']['bart_summary'].item()
 
-            # RESULTS
-            # Possible results
-            # result = ['BUY', 'SELL', 'NO DATA FOUND', 'ERROR]
+                # Use Facebook BART model to summarize the aggregation of summaries
+                pos_overall_summary = article_summary('positive', pos_summary)
+                neg_overall_summary = article_summary('negative', neg_summary)
 
-            # Summary of results
-            # group by 'Sentiment' and get counts
-            sentiment_counts = df.groupby(['sentiment']).size().reset_index(name='count').sort_values(by='count', ascending=False)
-            st.subheader(f'Article Summary for {value}')
-            st.write(sentiment_counts)
+                # Display results
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.header("Positive Summary")
+                    st.write(pos_overall_summary)
 
-            # Summarize the Positive and Negative articles
-            # st.write(df.loc[df['sentiment'] == 'positive', 'bart_summary'])
-            final_df = df.groupby(['sentiment'], as_index = False).agg({'bart_summary': ' '.join})
-            pos_summary = final_df[final_df['sentiment']=='positive']['bart_summary'].item()
-            neg_summary = final_df[final_df['sentiment']=='negative']['bart_summary'].item()
+                with col2:
+                    st.header("Negative Summary")
+                    st.write(neg_overall_summary)
 
-            # Display results
-            col1, col2 = st.columns(2)
-            with col1:
-                st.header("Positive Summary")
-                st.write(pos_summary)
+                # ADD THE STOCKS TO SNOWFLAKE LOGS
+                pos_overall_summary = pos_overall_summary.replace("'", "\\'")
+                neg_overall_summary = neg_overall_summary.replace("'", "\\'")
+                # st.write(st.session_state.email, value, sentiment_counts.loc[sentiment_counts['sentiment'] == 'positive', 'count'].values[0], sentiment_counts.loc[sentiment_counts['sentiment'] == 'neutral', 'count'].values[0], sentiment_counts.loc[sentiment_counts['sentiment'] == 'negative', 'count'].values[0], f"""{pos_overall_summary}""", f"""{neg_overall_summary}""")
+                # print(f"""{pos_overall_summary}""")
+                # print(type(pos_overall_summary))
+                db_util.add_stock_run(st.session_state.email, value, sentiment_counts.loc[sentiment_counts['sentiment'] == 'positive', 'count'].values[0], sentiment_counts.loc[sentiment_counts['sentiment'] == 'neutral', 'count'].values[0], sentiment_counts.loc[sentiment_counts['sentiment'] == 'negative', 'count'].values[0], pos_overall_summary, neg_overall_summary)
 
-            with col2:
-                st.header("Negative Summary")
-                st.write(neg_summary)
         
 
 

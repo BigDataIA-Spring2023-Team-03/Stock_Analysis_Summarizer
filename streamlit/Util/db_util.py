@@ -1,6 +1,7 @@
 from Util import db_conn
 from datetime import datetime
 import pandas as pd
+# import snowflake.connector
 
 # from Authentication import auth
 
@@ -38,14 +39,19 @@ def insert_user(email: str, password_hash: str, service_plan: str, admin_flag: b
 #     except Exception as e:
 #         raise Exception("Error during query execution", e)
     
-#Add new user to db
-def add_stock_run(email, stock, service_plan, result):
+# Add new user to db
+def add_stock_run(email, stock, positive_article_count, neutral_article_count, negative_article_count, postive_summary, negative_summary):
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
+    # Escape special characters
+    # positive_summary = snowflake.connector.escape_string(positive_summary)
+    # positive_summary = positive_summary.replace("'", "\\'")
+    # negative_summary = snowflake.connector.escape_string(negative_summary)\
+    # negative_summary = negative_summary.replace("'", "\\'")
     with db_conn.get_conn().cursor() as cur:
         cur.execute(
-            f"""INSERT INTO logging (email, run_date, stock, service_plan, result) 
-              VALUES ('{email}', '{timestamp}', '{stock}', '{service_plan}', '{result}')"""
+            f"""INSERT INTO logging (email, run_date, stock, positive_article_count, neutral_article_count, negative_article_count, postive_summary, negative_summary) VALUES ('{email}', '{timestamp}', '{stock}', {positive_article_count}, {neutral_article_count}, {negative_article_count}, '{postive_summary}', '{negative_summary}')"""
              )
+        
         
 # Read table into df
 def select_table(table_name: str):
