@@ -116,7 +116,10 @@ def get_new_article_data(stock):
         else:
             unique_publish_date = []
 
-            res = json.loads(response.text)
+            print(response.text)
+            # res = json.loads(response.text)
+            res = response.json()
+            print(res)
             article_data = []
             for j in res['data']:
                 id = j['id']
@@ -128,9 +131,10 @@ def get_new_article_data(stock):
                 }
                 response = requests.request("GET", url, headers=headers, params=querystring)
                 if response.status_code == 200:
-                    # print(response.text)
-                    res = json.loads(response.text)
-                    # print(res)
+                    print(response.text)
+                    # res = json.loads(response.text)
+                    res = response.json()
+                    print(res)
 
                     # TODO: Convert content from HTML to string
                     # res['data']['attributes']['content']

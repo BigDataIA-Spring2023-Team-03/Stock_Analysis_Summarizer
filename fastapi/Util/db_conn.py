@@ -1,11 +1,15 @@
 import snowflake.connector
 from dbutils.pooled_db import PooledDB
+from decouple import config
+
+# SNOWFLAKE PASSWORD
+snowflake_password = config('snowflake_password')
 
 # Define your Snowflake connection parameters
 conn_params = {
     'account': 'sh13682.ca-central-1.aws',
     'user': 'DAMG7245_SA',
-    'password': '<password>',
+    'password': snowflake_password,
     'database': 'STOCK_ANALYSIS_APP',
     'schema': 'PUBLIC',
     'warehouse': 'compute_wh',

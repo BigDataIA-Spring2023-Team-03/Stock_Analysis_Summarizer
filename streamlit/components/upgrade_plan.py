@@ -1,9 +1,17 @@
 import streamlit as st
 import requests
 import time
+from Util import db_util
 
 def upgrade_plan(email: str):
     st.title('Update Service Plan')
+
+    # Service Plans
+    st.subheader('Service Plans')
+    df = db_util.select_table('service_plan')
+    # df.reset_index(drop=True, inplace=True)
+    st.write(df)
+
     st.write(f'Current Service Plan: {get_service_plan(email)["service_plan"]}')
     l = ['FREE', 'GOLD', 'PLATINUM']
     updated_plan = st.selectbox("Select a plan", [i for i in l if not i == get_service_plan(email)["service_plan"]])

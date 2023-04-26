@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import time
 from email_validator import validate_email, EmailNotValidError
+from Util import db_util
 
 def register():
     st.title('Register Page')
@@ -23,6 +24,7 @@ def register():
     password = st.text_input('Password', type='password')
     confirm_password = st.text_input('Confirm Password', type='password')
     service_plan = st.selectbox('Service Plan', ['FREE', 'GOLD', 'PLATINUM'])
+
     admin_flag = st.checkbox('Admin Flag')
 
     # if check_email(email) == True and st.button('Register'):
@@ -42,3 +44,9 @@ def register():
         st.error('Passwords don\'t match')
         time.sleep(3)
         st.experimental_rerun()
+
+    # Service Plans
+    st.subheader('Service Plans')
+    df = db_util.select_table('service_plan')
+    # df.reset_index(drop=True, inplace=True)
+    st.write(df)

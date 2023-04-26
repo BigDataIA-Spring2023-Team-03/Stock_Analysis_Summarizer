@@ -1,5 +1,6 @@
 from Util import db_conn
 from datetime import datetime
+import pandas as pd
 
 # from Authentication import auth
 
@@ -45,4 +46,20 @@ def add_stock_run(email, stock, service_plan, result):
             f"""INSERT INTO logging (email, run_date, stock, service_plan, result) 
               VALUES ('{email}', '{timestamp}', '{stock}', '{service_plan}', '{result}')"""
              )
+        
+# Read table into df
+def select_table(table_name: str):
+    with db_conn.get_conn().cursor() as cur:
+        cur.execute(f'select * from STOCK_ANALYSIS_APP.PUBLIC.{table_name}'
+        )
+        # Fetch all the results into a Pandas DataFrame
+        df = pd.DataFrame(cur.fetchall())
+        # Set the column names to match the table schema
+        df.columns = [desc[0] for desc in cur.description]
+
+    # testing 
+    # print(df)
+
+    return df
+
 
