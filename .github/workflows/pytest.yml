@@ -11,6 +11,7 @@ jobs:
     env:
       secret: ${{ secrets.secret }}
       algorithm: ${{ secrets.algorithm }}
+      snowflake_password: ${{ secrets.snowflake_password }}
 
     steps:
     - name: Checkout code
