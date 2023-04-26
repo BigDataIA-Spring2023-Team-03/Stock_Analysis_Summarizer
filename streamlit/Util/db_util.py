@@ -40,7 +40,7 @@ def insert_user(email: str, password_hash: str, service_plan: str, admin_flag: b
 #         raise Exception("Error during query execution", e)
     
 # Add new user to db
-def add_stock_run(email, stock, positive_article_count, neutral_article_count, negative_article_count, postive_summary, negative_summary):
+def add_stock_run(email, stock, positive_article_count, neutral_article_count, negative_article_count, positive_summary, negative_summary):
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")
     # Escape special characters
     # positive_summary = snowflake.connector.escape_string(positive_summary)
@@ -49,7 +49,7 @@ def add_stock_run(email, stock, positive_article_count, neutral_article_count, n
     # negative_summary = negative_summary.replace("'", "\\'")
     with db_conn.get_conn().cursor() as cur:
         cur.execute(
-            f"""INSERT INTO logging (email, run_date, stock, positive_article_count, neutral_article_count, negative_article_count, postive_summary, negative_summary) VALUES ('{email}', '{timestamp}', '{stock}', {positive_article_count}, {neutral_article_count}, {negative_article_count}, '{postive_summary}', '{negative_summary}')"""
+            f"""INSERT INTO logging (email, run_date, stock, positive_article_count, neutral_article_count, negative_article_count, positive_summary, negative_summary) VALUES ('{email}', '{timestamp}', '{stock}', {positive_article_count}, {neutral_article_count}, {negative_article_count}, '{positive_summary}', '{negative_summary}')"""
              )
         
         
@@ -57,6 +57,45 @@ def add_stock_run(email, stock, positive_article_count, neutral_article_count, n
 def select_table(table_name: str):
     with db_conn.get_conn().cursor() as cur:
         cur.execute(f'select * from STOCK_ANALYSIS_APP.PUBLIC.{table_name}'
+        )
+        # Fetch all the results into a Pandas DataFrame
+        df = pd.DataFrame(cur.fetchall())
+        # Set the column names to match the table schema
+        df.columns = [desc[0] for desc in cur.description]
+
+    # testing 
+    # print(df)
+
+    return df
+
+
+# Get History for user
+def user_history(email: str):
+    with db_conn.get_conn().cursor() as cur:
+        cur.execute(f"""select distinct stock, to_date(run_date) run_date
+from STOCK_ANALYSIS_APP.PUBLIC.logging
+where email = '{email}'
+order by stock, run_date"""
+        )
+        # Fetch all the results into a Pandas DataFrame
+        df = pd.DataFrame(cur.fetchall())
+        # Set the column names to match the table schema
+        df.columns = [desc[0] for desc in cur.description]
+
+    # testing 
+    # print(df)
+
+    return df
+
+
+# Get History for user
+def analysis_results(email: str, stock: str, run_date: str):
+    with db_conn.get_conn().cursor() as cur:
+        cur.execute(f"""select distinct positive_article_count, neutral_article_count, negative_article_count, positive_summary, negative_summary
+from logging
+where email = '{email}'
+        and stock = '{stock}'
+        and to_date(run_date) = '{run_date}'"""
         )
         # Fetch all the results into a Pandas DataFrame
         df = pd.DataFrame(cur.fetchall())

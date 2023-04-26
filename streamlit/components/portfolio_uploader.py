@@ -135,11 +135,6 @@ def article_summary(sentiment, aggregate_summary):
 
 ##############################################################################################################################
 
-def update_api_calls_left():
-    st.session_state.calls_left = new_calls_left
-
-    st.experimental_rerun()
-
 def portfolio_uploader():
     # Title of the page
     st.title("Stock Analysis Summarizer")
@@ -218,17 +213,16 @@ def portfolio_uploader():
                 top_10_stocks = ['aapl', 'msft', 'amzn', 'nvda', 'googl', 'brk.b', 'goog', 'tsla', 'unh', 'meta']
                 if value in top_10_stocks:
                     df = get_analysis_data(value)
-                    st.write(df.head())
+                    st.write(df.head(10))
 
                 # Option 2: If New Stock, then call new_stock_article_fetcher DAG
                 else:
                     # API Call to Airflow to execute process_audio_files_dag
                     data = {
-                        "dag_run_id": "",
-                        "conf": {"stocks": [value]}
-                    }
-                    response = requests.post(url=f'http://{webserver}/api/v1/dags/new_stock_article_fetcher/dagRuns',
-                                             json=data, auth=('airflow2', 'airflow2'))
+                            "dag_run_id": "",
+                            "conf": {"stock": value}
+                            }
+                    response = requests.post(url = f'http://{webserver}/api/v1/dags/new_stock_article_fetcher/dagRuns', json=data, auth=('airflow2','airflow2'))
                     if response.status_code == 409:
                         st.error(f'{value} data up-to-date in S3!')
 
@@ -241,8 +235,9 @@ def portfolio_uploader():
 
                     # IF DAG runs successfully then get the data
                     if check_dag_status("new_stock_article_fetcher") == 'success':
-                        # TODO:
-                        st.write('TRIGGER DAG - new stock')
+                        # get data from S3
+                        df = get_analysis_data(value)
+                        st.write(df.head(10))
 
                 data2 = {'email': st.session_state.email}
                 headers = {"Authorization": f"Bearer {st.session_state.access_token}"}
