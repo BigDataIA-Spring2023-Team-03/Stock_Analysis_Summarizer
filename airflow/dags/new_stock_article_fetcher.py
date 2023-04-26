@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import time
 import requests
 import re
+import numpy as np
 from airflow.models import DAG, XCom, Variable
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy import DummyOperator
@@ -220,6 +221,19 @@ def get_sentiment(summary):
     # convert to list
     return list(probs)
 
+# Get the sentiment using the greatest probability 
+def overall_sentiment(probs):
+    arr = np.array(probs)
+    max_pos = np.argmax(arr)
+    if max_pos == 0:
+        overall = 'positive'
+    elif max_pos == 1:
+        overall = 'negative'
+    elif max_pos == 2:
+        overall = 'neutral'
+    else:
+        overall = ''
+    return overall
 
 # Push Results to S3
 def push_summarized_data(stock, date, article_data):
@@ -270,7 +284,9 @@ def main(stock):
                     # Get Sentiment
                     probs = get_sentiment(summary)
                     # Add sentiment to article dictionary
-                    article_data[i]['sentiment'] = probs
+                    article_data[i]['sentiment_probs'] = probs
+                    # add overall sentiment
+                    article_data[i]['sentiment'] = overall_sentiment(probs)
 
                     # Append
                     article_data_date_subset.append(article_data[i])

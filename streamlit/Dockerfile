@@ -2,18 +2,19 @@ FROM python:3.10.6
 
 WORKDIR /app
 
-COPY main.py /app/
+# Steamlit
+COPY Home.py /app/
 
 COPY requirements.txt /app/
 
-COPY components /app/pages
+COPY /components/ /app/components/
 
-COPY Logging /app/Logging
+COPY /Util/ /app/Util/
 
-#COPY ./ /app/requirements.txt
+COPY /.streamlit/ /app/.streamlit/
 
 RUN pip install -r requirements.txt
 
+EXPOSE 8501
 
-
-CMD ["streamlit", "run", "main.py"]
+CMD ["streamlit", "run", "Home.py"]
