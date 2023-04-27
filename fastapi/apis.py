@@ -17,6 +17,7 @@ async def read_main(token):
 def register(user: schemas.UserRegisterSchema):
     if not db_util.check_user_exists(user.email):
         db_util.insert_user(user.email, auth.get_password_hash(user.password), user.service_plan, user.admin_flag)
+        return auth.signJWT(user.email)
     else:
         raise HTTPException(status_code=400, detail="User with that email already exists")
     return auth.signJWT(user.email)

@@ -35,7 +35,10 @@ def register():
             if response.status_code == 200:
                 st.success('Account created for {}'.format(email))
                 time.sleep(3)
-                st.experimental_rerun()
+                access_token = response.json().get("access_token")
+                st.session_state.access_token = access_token
+                if access_token:
+                    st.experimental_rerun()
             else:
                 st.error('Failed to create account')
         else:

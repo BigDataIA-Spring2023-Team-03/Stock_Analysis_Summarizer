@@ -13,6 +13,7 @@ def upgrade_plan(email: str):
     st.write(df)
 
     st.write(f'Current Service Plan: {get_service_plan(email)["service_plan"]}')
+    st.write(f'API Calls left: {st.session_state.calls_left}')
     l = ['FREE', 'GOLD', 'PLATINUM']
     updated_plan = st.selectbox("Select a plan", [i for i in l if not i == get_service_plan(email)["service_plan"]])
     if st.button('Submit'):
@@ -25,8 +26,10 @@ def get_service_plan(email: str):
 
 def update_service_plan(email, updated_plan: str, l):
     if updated_plan and updated_plan in l:
+
         data = {'service_plan': updated_plan, 'email': email}
-        response = requests.post("http://localhost:8000/update_plan", json=data)
+        headers = {'Authorization': f'Bearer {st.session_state.access_token}'}
+        response = requests.post("http://localhost:8000/update_plan", json=data, headers=headers)
         if response.status_code == 200:
             st.success('Service Plan Updated for {}'.format(email))
             time.sleep(1)

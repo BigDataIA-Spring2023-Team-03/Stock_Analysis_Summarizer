@@ -51,6 +51,9 @@ def update_serviceplan(service_plan: str, email: str):
         cur.execute(
             f"UPDATE API_CALLS SET CALLS_LEFT = '{calls_left}' WHERE email = '{email}'"
         )
+        cur.execute(
+            f"UPDATE API_CALLS SET SERVICE_PLAN = '{service_plan}' WHERE email = '{email}'"
+        )
 
 def update_api_calls(email: str):
     with db_conn.get_conn().cursor() as cur:
@@ -66,6 +69,9 @@ def delete_user(email: str):
     with db_conn.get_conn().cursor() as cur:
         cur.execute(
             f"DELETE FROM USERS WHERE email = '{email}'"
+        )
+        cur.execute(
+            f"DELETE FROM API_CALLS WHERE email = '{email}'"
         )
 
 def check_user(email: str, password: str):
