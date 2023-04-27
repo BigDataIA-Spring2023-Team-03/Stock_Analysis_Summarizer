@@ -108,3 +108,52 @@ where email = '{email}'
     return df
 
 
+# USER_HISTORY_DASHBOARD
+def user_history_dashboard():
+    with db_conn.get_conn().cursor() as cur:
+        cur.execute(f"""select to_date(signup_date) signup_date, service_plan, count(email) total_users
+from users
+group by signup_date, service_plan
+order by signup_date"""
+        )
+        # Fetch all the results into a Pandas DataFrame
+        df = pd.DataFrame(cur.fetchall())
+        # Set the column names to match the table schema
+        df.columns = [desc[0] for desc in cur.description]
+
+    return df
+
+# STOCK_HISTORY_DASHBOARD
+def stock_history_dashboard():
+    with db_conn.get_conn().cursor() as cur:
+        cur.execute(f"""select distinct stock, count(distinct to_date(run_date)) overall_runs
+from logging
+group by stock
+order by overall_runs desc"""
+        )
+        # Fetch all the results into a Pandas DataFrame
+        df = pd.DataFrame(cur.fetchall())
+        # Set the column names to match the table schema
+        df.columns = [desc[0] for desc in cur.description]
+
+    return df
+
+
+# USAGE_HISTORY_DASHBOARD
+def usage_history_dashboard():
+    with db_conn.get_conn().cursor() as cur:
+        cur.execute(f"""select distinct to_date(run_date) run_date, 
+                count(distinct email) unique_users, 
+                count(distinct stock) unique_stocks,
+                count(distinct email || stock) total_runs
+from logging
+group by run_date"""
+        )
+        # Fetch all the results into a Pandas DataFrame
+        df = pd.DataFrame(cur.fetchall())
+        # Set the column names to match the table schema
+        df.columns = [desc[0] for desc in cur.description]
+
+    return df
+
+

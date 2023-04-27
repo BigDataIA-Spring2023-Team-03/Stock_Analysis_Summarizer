@@ -3,6 +3,13 @@ import requests
 import time
 from Util import db_util
 
+# DEV or PROD
+environment = 'DEV'
+if environment == 'DEV':
+    webserver = 'localhost:8000'
+elif environment == 'PROD':
+    webserver = 'backend:8000'
+
 def upgrade_plan(email: str):
     st.title('Update Service Plan')
 
@@ -21,7 +28,7 @@ def upgrade_plan(email: str):
 
 def get_service_plan(email: str):
     if email and not email == "":
-        response = requests.get("http://backend:8000/user_data", params={'email': email})
+        response = requests.get(f"http://{webserver}/user_data", params={'email': email})
         return response.json()
 
 def update_service_plan(email, updated_plan: str, l):
@@ -29,7 +36,7 @@ def update_service_plan(email, updated_plan: str, l):
 
         data = {'service_plan': updated_plan, 'email': email}
         headers = {'Authorization': f'Bearer {st.session_state.access_token}'}
-        response = requests.post("http://backend:8000/update_plan", json=data, headers=headers)
+        response = requests.post(f"http://{webserver}/update_plan", json=data, headers=headers)
         if response.status_code == 200:
             st.success('Service Plan Updated for {}'.format(email))
             time.sleep(1)

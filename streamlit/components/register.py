@@ -4,6 +4,13 @@ import time
 from email_validator import validate_email, EmailNotValidError
 from Util import db_util
 
+# DEV or PROD
+environment = 'DEV'
+if environment == 'DEV':
+    webserver = 'localhost:8000'
+elif environment == 'PROD':
+    webserver = 'backend:8000'
+
 def register():
     st.title('Register Page')
 
@@ -31,7 +38,7 @@ def register():
     if password == confirm_password and st.button('Register'):
         if check_email(email) == True:
             data = {'email': email, 'password': password, 'service_plan': service_plan, 'admin_flag': admin_flag}
-            response = requests.post('http://backend:8000/user/register', json=data)
+            response = requests.post(f'http://{webserver}/user/register', json=data)
             if response.status_code == 200:
                 st.success('Account created for {}'.format(email))
                 time.sleep(3)

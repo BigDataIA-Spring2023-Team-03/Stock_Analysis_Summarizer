@@ -246,7 +246,7 @@ def portfolio_uploader():
 
                     data2 = {'email': st.session_state.email}
                     headers = {"Authorization": f"Bearer {st.session_state.access_token}"}
-                    res2 = requests.post('http://backend:8000/update_api_calls', json=data2, headers = headers)
+                    res2 = requests.post('http://{webserver}/update_api_calls', json=data2, headers = headers)
                     st.session_state['calls_left'] = st.session_state.calls_left - 1
                     # Summary of results
                     # group by 'Sentiment' and get counts

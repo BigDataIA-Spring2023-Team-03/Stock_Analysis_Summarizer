@@ -9,6 +9,7 @@ analysis_pipeline_local.py
 
 # venv
 stock_env
+fastapi_env
 
 # Snowflake
 secrets.toml
@@ -21,3 +22,9 @@ jv_scrap.py
 /airflow/logs/
 streamlit/key.key
 streamlit/userlogs.txt
+
+# scrap
+dataset
+streamlit/components/scrap
+unittest_loginPage.py
+userlogs.txt
