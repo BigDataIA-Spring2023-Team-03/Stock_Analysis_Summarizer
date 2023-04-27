@@ -1,13 +1,8 @@
-import os
 import streamlit as st
-import boto3
-from botocore.errorfactory import ClientError
-import requests
-import time
-import json
+import plotly.graph_objs as go
+import plotly.express as px
 import pandas as pd
 from datetime import datetime, timedelta
-from decouple import config
 from Util import db_util
 
 
@@ -30,12 +25,30 @@ def admin_dashboard():
             df = db_util.user_history_dashboard()
             st.write(df)
 
+            # Create a line graph using plotly
+            fig = px.line(df, x="SIGNUP_DATE", y="TOTAL_USERS", color="SERVICE_PLAN")
+
+            # Update the layout of the graph
+            fig.update_layout(title="Total Users by Signup Date and Service Plan", xaxis_title="Signup Date", yaxis_title="Total Users")
+
+            # Display the graph
+            st.plotly_chart(fig)
+
             #############################################################################
             # Stock HISTORY
             st.subheader('Stock History')
 
             df = db_util.stock_history_dashboard()
             st.write(df)
+            
+            # Create a bar graph using plotly
+            fig = go.Figure(data=[go.Bar(x=df["STOCK"], y=df["OVERALL_RUNS"])])
+
+            # Update the layout of the graph
+            fig.update_layout(title="Overall Runs by Stock", xaxis_title="Stock", yaxis_title="Overall Runs")
+
+            # Display the graph
+            st.plotly_chart(fig)
 
             #############################################################################
             # Overall Usage HISTORY

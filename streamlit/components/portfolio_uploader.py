@@ -18,9 +18,11 @@ from Util import db_util
 # DEV or PROD
 environment = 'DEV'
 if environment == 'DEV':
-    webserver = 'localhost:8080'
+    fastapi_webserver = 'localhost:8000'
+    airflow_webserver = 'localhost:8080'
 elif environment == 'PROD':
-    webserver = 'airflow-airflow-webserver-1:8080'
+    fastapi_webserver = 'backend:8000'
+    airflow_webserver = 'airflow-airflow-webserver-1:8080'
 
 # AWS KEYS
 aws_access_key_id = config('aws_access_key_id')
@@ -105,7 +107,7 @@ def get_analysis_data(stock):
 
 # Check DAG Status
 def check_dag_status(dag_id):
-    url = f'http://{webserver}/api/v1/dags/{dag_id}/dagRuns'
+    url = f'http://{airflow_webserver}/api/v1/dags/{dag_id}/dagRuns'
     response = requests.get(url=url, auth=('airflow2', 'airflow2'))
     response_json = response.json()
     state = response_json['dag_runs'][len(response_json['dag_runs']) - 1]['state']
@@ -227,7 +229,7 @@ def portfolio_uploader():
                                 "dag_run_id": "",
                                 "conf": {"stock": value}
                                 }
-                        response = requests.post(url = f'http://{webserver}/api/v1/dags/new_stock_article_fetcher/dagRuns', json=data, auth=('airflow2','airflow2'))
+                        response = requests.post(url = f'http://{airflow_webserver}/api/v1/dags/new_stock_article_fetcher/dagRuns', json=data, auth=('airflow2','airflow2'))
                         if response.status_code == 409:
                             st.error(f'{value} data up-to-date in S3!')
 
@@ -246,7 +248,7 @@ def portfolio_uploader():
 
                     data2 = {'email': st.session_state.email}
                     headers = {"Authorization": f"Bearer {st.session_state.access_token}"}
-                    res2 = requests.post('http://{webserver}/update_api_calls', json=data2, headers = headers)
+                    res2 = requests.post(f'http://{fastapi_webserver}/update_api_calls', json=data2, headers = headers)
                     st.session_state['calls_left'] = st.session_state.calls_left - 1
                     # Summary of results
                     # group by 'Sentiment' and get counts
