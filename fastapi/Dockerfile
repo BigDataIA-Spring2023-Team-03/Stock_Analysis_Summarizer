@@ -7,11 +7,11 @@ FROM python:3.10.6
 WORKDIR /app
 # Change working dir to app
 
-COPY apis.py schemas.py requirements.txt /app/
+COPY /fastapi/apis.py /fastapi/schemas.py /fastapi/requirements.txt /app/
 
-COPY /Authentication/ /app/Authentication/
+COPY /fastapi/Authentication/ /app/Authentication/
 
-COPY /Util/ /app/Util/
+COPY /fastapi/Util/ /app/Util/
 
 RUN pip install -r requirements.txt
 
