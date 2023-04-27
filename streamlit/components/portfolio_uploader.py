@@ -280,13 +280,25 @@ def portfolio_uploader():
                 # ADD THE STOCKS TO SNOWFLAKE LOGS
                 pos_overall_summary = pos_overall_summary.replace("'", "\\'")
                 neg_overall_summary = neg_overall_summary.replace("'", "\\'")
+
+                
+                try:
+                    pos_count = sentiment_counts.loc[sentiment_counts['sentiment'] == 'positive', 'count'].values[0]
+                except:
+                    pos_count = 0
+                try:
+                    neu_count = sentiment_counts.loc[sentiment_counts['sentiment'] == 'neutral', 'count'].values[0]
+                except:
+                    neu_count = 0
+                try:
+                    neg_count = sentiment_counts.loc[sentiment_counts['sentiment'] == 'negative', 'count'].values[0]
+                except:
+                    neg_count = 0
+
                 db_util.add_stock_run(st.session_state.email, value,
-                                      sentiment_counts.loc[sentiment_counts['sentiment'] == 'positive', 'count'].values[
-                                          0],
-                                      sentiment_counts.loc[sentiment_counts['sentiment'] == 'neutral', 'count'].values[
-                                          0],
-                                      sentiment_counts.loc[sentiment_counts['sentiment'] == 'negative', 'count'].values[
-                                          0], pos_overall_summary, neg_overall_summary)
+                                      pos_count,
+                                      neu_count,
+                                      neg_count, pos_overall_summary, neg_overall_summary)
 
 #############################################################################################################################
 
