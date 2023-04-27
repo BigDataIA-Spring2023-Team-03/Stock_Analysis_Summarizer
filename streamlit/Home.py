@@ -3,6 +3,14 @@ from components import login, register, portfolio_uploader, admin_dashboard, ana
 import requests
 import time
 
+# DEV or PROD
+environment = 'DEV'
+if environment == 'DEV':
+    webserver = 'localhost:8000'
+elif environment == 'PROD':
+    webserver = 'backend:8000'
+
+
 # BACKGROUND
 def add_bg_from_url():
     st.markdown(
@@ -38,14 +46,14 @@ def render_sidebar():
         selected_page = st.sidebar.selectbox("Select a page", ["Login", "Register"])
     else:
         selected_page = st.sidebar.selectbox("Select a page", ["Portfolio Uploader", "Analysis vs Reality", "Admin Dashboard", "Upgrade Plan"])
-        response = requests.get("http://backend:8000/user_info", params={'token': st.session_state.access_token})
+        response = requests.get(f"http://{webserver}/user_info", params={'token': st.session_state.access_token})
         email = ''
         if response.status_code == 200:
             email = response.json().get('email')
         if email:
             st.session_state.email = email
 
-            res = requests.get("http://backend:8000/user_data", params={'email': st.session_state.email})
+            res = requests.get(f"http://{webserver}/user_data", params={'email': st.session_state.email})
             if res.status_code == 200:
                 calls_left = res.json().get('calls_left')
                 st.session_state.calls_left = calls_left
