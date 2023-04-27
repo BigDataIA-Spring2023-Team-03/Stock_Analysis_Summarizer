@@ -16,7 +16,7 @@ from transformers import pipeline, BartTokenizer
 from Util import db_util
 
 # DEV or PROD
-environment = 'DEV'
+environment = 'PROD'
 if environment == 'DEV':
     webserver = 'localhost:8080'
 elif environment == 'PROD':
@@ -246,7 +246,7 @@ def portfolio_uploader():
 
                     data2 = {'email': st.session_state.email}
                     headers = {"Authorization": f"Bearer {st.session_state.access_token}"}
-                    res2 = requests.post('http://{webserver}/update_api_calls', json=data2, headers = headers)
+                    res2 = requests.post('http://backend/update_api_calls', json=data2, headers = headers)
                     st.session_state['calls_left'] = st.session_state.calls_left - 1
                     # Summary of results
                     # group by 'Sentiment' and get counts

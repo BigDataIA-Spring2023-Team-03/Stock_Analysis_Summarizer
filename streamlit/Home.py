@@ -4,7 +4,7 @@ import requests
 import time
 
 # DEV or PROD
-environment = 'DEV'
+environment = 'PROD'
 if environment == 'DEV':
     webserver = 'localhost:8000'
 elif environment == 'PROD':
