@@ -148,6 +148,11 @@ def portfolio_uploader():
     if "portfolio" not in st.session_state:
         st.session_state['portfolio'] = pd.DataFrame(columns=['Stock_Ticker'])
 
+    # Clear portfolio
+    clear = st.checkbox('Clear Portfolio')
+    if clear:
+        st.session_state['portfolio'] = pd.DataFrame(columns=['Stock_Ticker'])
+
     # Manually add tickers
     manual_upload = st.checkbox('Manually Upload Portfolio')
 

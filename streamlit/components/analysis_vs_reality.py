@@ -16,11 +16,13 @@ def analysis_vs_reality():
     # Get Tickers and dates of previous runs
     df = db_util.user_history(st.session_state.email)
     stock_list = df['STOCK'].tolist()
+    stock_list = list(set(stock_list))
     
     selected_stock = st.selectbox('Select a stock', stock_list)
     if selected_stock:
         date_list = []
         date_list.append(df.loc[df['STOCK'] == selected_stock, 'RUN_DATE'].item())
+        date_list = list(set(date_list))
 
         selected_date = st.selectbox('Select a date of analysis', date_list)
 
