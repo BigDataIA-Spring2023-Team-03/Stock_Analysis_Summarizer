@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # DEV or PROD
-environment = 'DEV'
+environment = 'PROD'
 if environment == 'DEV':
     webserver = 'localhost:8000'
 elif environment == 'PROD':

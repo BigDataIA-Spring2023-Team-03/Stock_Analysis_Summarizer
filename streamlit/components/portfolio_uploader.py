@@ -16,7 +16,7 @@ from transformers import pipeline, BartTokenizer
 from Util import db_util
 
 # DEV or PROD
-environment = 'DEV'
+environment = 'PROD'
 if environment == 'DEV':
     fastapi_webserver = 'localhost:8000'
     airflow_webserver = 'localhost:8080'
