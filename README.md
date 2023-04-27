@@ -9,7 +9,7 @@
 
 
 # CLaaT Document
-https://docs.google.com/document/d/12P7LfVvkH8Tvr3W56wv3sN52bWdVNFJHefoswlgemzQ/edit#
+https://codelabs-preview.appspot.com/?file_id=1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA#14
 
 # Google Document
 https://docs.google.com/document/d/1p_WCcLuuckm8ZOMLAS3dW51qS42W7ai5eQi7n4rgSek/edit
