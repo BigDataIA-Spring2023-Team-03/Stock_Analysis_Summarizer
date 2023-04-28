@@ -113,8 +113,8 @@ def user_history_dashboard():
     with db_conn.get_conn().cursor() as cur:
         cur.execute(f"""select to_date(signup_date) signup_date, service_plan, count(email) total_users
 from users
-group by signup_date, service_plan
-order by signup_date"""
+group by to_date(signup_date), service_plan
+order by signup_date desc"""
         )
         # Fetch all the results into a Pandas DataFrame
         df = pd.DataFrame(cur.fetchall())
@@ -147,7 +147,8 @@ def usage_history_dashboard():
                 count(distinct stock) unique_stocks,
                 count(distinct email || stock) total_runs
 from logging
-group by run_date"""
+group by to_date(run_date)
+order by to_date(run_date) desc"""
         )
         # Fetch all the results into a Pandas DataFrame
         df = pd.DataFrame(cur.fetchall())
