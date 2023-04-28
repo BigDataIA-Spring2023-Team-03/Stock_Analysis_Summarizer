@@ -21,6 +21,19 @@ https://docs.google.com/document/d/1p_WCcLuuckm8ZOMLAS3dW51qS42W7ai5eQi7n4rgSek/
 
 This project aims to provide summary of the analysis articles for a given portfolio of stock tickers. The data is collected from SeekingAlpha, a financial news website that publishes analysis articles on various stocks.
 
+# Goals 🎯
+
+ - Provide investors with quick and accurate analysis summaries: One of the main goals of your project could be to provide investors with quick and accurate summaries of analysis articles related to their portfolio of stock tickers. This could be useful for busy investors who don't have time to read through all the articles themselves, or for those who want to get a quick overview of the sentiment and news related to their portfolio.
+ - Automate stock analysis research: Another goal could be to automate the process of collecting, analyzing, and summarizing stock analysis articles. This could save investors time and effort, as they would not have to manually search for and read through articles. The automated process could be set up to run periodically, providing investors with up-to-date information on their portfolio.
+ - Provide insights and trends for stocks: Your project could also be used to provide insights and trends for various stocks over time. By analyzing sentiment and summarizing news articles over a period of time, you could provide investors with insights into how a particular stock is performing and any notable trends that may be emerging. This could be useful for investors who want to make informed decisions about buying, selling, or holding a particular stock.
+
+
+# Use cases 
+
+ - Investment research: Your project could be useful for investment research, as it provides an easy and automated way to collect and analyze news articles related to a portfolio of stocks. Investors can use the summarized news and sentiment analysis to make informed decisions about their investments.
+ - Financial news aggregation: Your project could be useful for aggregating financial news, as it collects and summarizes news articles from SeekingAlpha, a popular financial news website. This can save time for investors who want to stay up-to-date on financial news but don't have the time to manually read through articles.
+ - Automated stock analysis: Your project could automate the process of collecting and summarizing news articles related to a portfolio of stocks. This can save investors time and effort, as they don't have to manually search for and read through articles. The automated process could be set up to run periodically, providing investors with up-to-date information on their portfolio.
+
 # Detailed User Process
 
 When a user logs in or signs up on the Streamlit application, they are granted access to the features of the application. One of these features is the GPT API, which allows the user to get the ticker name for a particular company. To use this feature, the user enters the ticker/tickers in the Streamlit web interface. When the user enters the ticker, an Airflow DAG is triggered to collect articles related to the provided stock tickers from SeekingAlpha. Once the articles are collected, they are preprocessed using Natural Language Processing (NLP) techniques, and sentiment analysis is performed on each article using the Procus-Finbert model. This model determines whether the article is positive or negative towards the company. All positive articles are then summarized into one positive summary, and the same is done for negative articles. The results are then stored in an S3 bucket. Finally, the summaries are displayed in the Streamlit web interface for the user to view. This entire process involves a series of technical steps that utilize different technologies to ensure accurate results and a seamless user experience.
