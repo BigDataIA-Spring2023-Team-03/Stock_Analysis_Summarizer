@@ -26,7 +26,10 @@ def admin_dashboard():
             st.write(df)
 
             # Create a line graph using plotly
-            fig = px.line(df, x="SIGNUP_DATE", y="TOTAL_USERS", color="SERVICE_PLAN")
+            fig = px.line(df, x="SIGNUP_DATE", y="TOTAL_USERS", color="SERVICE_PLAN", markers=True)
+
+            # set y-axis to 0
+            fig.update_yaxes(rangemode="tozero")
 
             # Update the layout of the graph
             fig.update_layout(title="Total Users by Signup Date and Service Plan", xaxis_title="Signup Date", yaxis_title="Total Users")

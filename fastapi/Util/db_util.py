@@ -24,9 +24,9 @@ def insert_user(email: str, password_hash: str, service_plan: str, admin_flag: b
     if service_plan == 'FREE':
         calls_left = 10
     elif service_plan == 'GOLD':
-        calls_left = 20
-    elif service_plan == 'PLATINUM':
         calls_left = 30
+    elif service_plan == 'PLATINUM':
+        calls_left = 50
     with db_conn.get_conn().cursor() as cur:
         cur.execute(
             "INSERT INTO USERS (EMAIL, PASSWORD, SIGNUP_DATE, SERVICE_PLAN, ADMIN_FLAG) VALUES (%s, %s, %s, %s, %s)",
@@ -41,9 +41,9 @@ def update_serviceplan(service_plan: str, email: str):
     if service_plan == 'FREE':
         calls_left = 10
     elif service_plan == 'GOLD':
-        calls_left = 20
-    elif service_plan == 'PLATINUM':
         calls_left = 30
+    elif service_plan == 'PLATINUM':
+        calls_left = 50
     with db_conn.get_conn().cursor() as cur:
         cur.execute(
             f"UPDATE USERS SET SERVICE_PLAN = '{service_plan}' WHERE email = '{email}'"
