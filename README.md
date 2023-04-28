@@ -11,10 +11,10 @@
 
 
 # CLaaT Document
-https://codelabs-preview.appspot.com/?file_id=1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA#14
+https://codelabs-preview.appspot.com/?file_id=1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA#5
 
 # Google Document
-https://docs.google.com/document/d/1p_WCcLuuckm8ZOMLAS3dW51qS42W7ai5eQi7n4rgSek/edit
+https://docs.google.com/document/d/1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA/edit?usp=sharing
 
 
 # Overview
