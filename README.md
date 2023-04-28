@@ -69,18 +69,15 @@ Sentiment_Stock_Forecaster/
 ┣ airflow/
 ┃ ┣ dags/
 ┃ ┃ ┣ daily_article_fetcher.py
-┃ ┃ ┣ daily_article_fetcher_copy.py
 ┃ ┃ ┣ delete_old_files_dag.py
 ┃ ┃ ┗ new_stock_article_fetcher.py
 ┃ ┗ docker-compose.yaml
 ┣ fastapi/
 ┃ ┣ Authentication/
-┃ ┃ ┣ __pycache__/
 ┃ ┃ ┣ __init__.py
 ┃ ┃ ┣ auth.py
 ┃ ┃ ┗ auth_bearer.py
 ┃ ┣ Util/
-┃ ┃ ┣ __pycache__/
 ┃ ┃ ┣ __init__.py
 ┃ ┃ ┣ db_conn.py
 ┃ ┃ ┗ db_util.py
@@ -93,31 +90,19 @@ Sentiment_Stock_Forecaster/
 ┃ ┣ schemas.py
 ┃ ┗ test_apis.py
 ┣ streamlit/
-┃ ┣ .test/
-┃ ┃ ┣ include/
-┃ ┃ ┗ lib/
 ┃ ┣ Util/
-┃ ┃ ┣ __pycache__/
-┃ ┃ ┣ .env
 ┃ ┃ ┣ __init__.py
 ┃ ┃ ┣ db_conn.py
 ┃ ┃ ┗ db_util.py
 ┃ ┣ components/
-┃ ┃ ┣ __pycache__/
 ┃ ┃ ┣ admin_dashboard.py
 ┃ ┃ ┣ analysis_vs_reality.py
 ┃ ┃ ┣ login.py
 ┃ ┃ ┣ portfolio_uploader.py
 ┃ ┃ ┣ register.py
 ┃ ┃ ┗ upgrade_plan.py
-┃ ┣ scrap/
-┃ ┃ ┣ abc.py
-┃ ┃ ┣ newspage.py
-┃ ┃ ┣ scraper.py
-┃ ┃ ┗ userinfo.db
 ┃ ┣ Dockerfile
 ┃ ┣ Home.py
-┃ ┣ Welcome.py
 ┃ ┣ analysis_pipeline.py
 ┃ ┣ example_format.json
 ┃ ┗ requirements.txt
