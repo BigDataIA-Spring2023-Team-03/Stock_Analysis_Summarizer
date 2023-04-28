@@ -1,0 +1,128 @@
+[2023-04-25T21:19:25.653+0000] {processor.py:153} INFO - Started process (PID=285) to work on /opt/airflow/dags/noaa.py
+[2023-04-25T21:19:25.661+0000] {processor.py:743} INFO - Processing file /opt/airflow/dags/noaa.py for tasks to queue
+[2023-04-25T21:19:25.665+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:25.665+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/noaa.py
+[2023-04-25T21:19:35.242+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.242+0000] {warnings.py:110} WARNING - /opt/airflow/dags/noaa.py:26: RemovedInAirflow3Warning: Function `days_ago` is deprecated and will be removed in Airflow 3.0. You can achieve equivalent behavior with `pendulum.today('UTC').add(days=-N, ...)`
+  start_date=days_ago(0),
+[2023-04-25T21:19:35.247+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.247+0000] {warnings.py:110} WARNING - /opt/airflow/dags/noaa.py:60: RemovedInAirflow3Warning: provide_context is deprecated as of 2.0 and is no longer required
+  dag=dag,
+[2023-04-25T21:19:35.249+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.249+0000] {warnings.py:110} WARNING - /opt/airflow/dags/noaa.py:67: RemovedInAirflow3Warning: provide_context is deprecated as of 2.0 and is no longer required
+  dag=dag,
+[2023-04-25T21:19:35.249+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.249+0000] {great_expectations.py:121} INFO - Ensuring data context is valid...
+[2023-04-25T21:19:35.293+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.293+0000] {file_data_context.py:200} INFO - FileDataContext loading fluent config
+[2023-04-25T21:19:35.297+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.297+0000] {config.py:152} INFO - Loading 'datasources' ->
+[]
+[2023-04-25T21:19:35.297+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.297+0000] {config.py:192} INFO - Loaded 'datasources' ->
+[]
+[2023-04-25T21:19:35.307+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.306+0000] {abstract_data_context.py:1367} INFO - Profiler store is not configured; omitting it from active stores
+[2023-04-25T21:19:35.311+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.311+0000] {abstract_data_context.py:1367} INFO - Profiler store is not configured; omitting it from active stores
+[2023-04-25T21:19:35.329+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:19:35.312+0000] {dagbag.py:343} ERROR - Failed to import: /opt/airflow/dags/noaa.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/models/dagbag.py", line 339, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/opt/airflow/dags/noaa.py", line 74, in <module>
+    fail_task_on_validation_failure=False
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/models/baseoperator.py", line 394, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations_provider/operators/great_expectations.py", line 124, in __init__
+    context_root_dir=self.data_context_root_dir
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/data_context.py", line 177, in DataContext
+    cloud_config=cloud_config,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/base_data_context.py", line 194, in BaseDataContext
+    cloud_mode=cloud_mode,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/util.py", line 1931, in get_context
+    runtime_environment=runtime_environment,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/file_data_context.py", line 66, in __init__
+    runtime_environment=runtime_environment,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/serializable_data_context.py", line 68, in __init__
+    super().__init__(runtime_environment=runtime_environment)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/core/usage_statistics/usage_statistics.py", line 318, in usage_statistics_wrapped_method
+    result = func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 286, in __init__
+    self._init_primary_stores(self.project_config_with_variables_substituted.stores)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 4477, in _init_primary_stores
+    self._build_store_from_config(store_name, store_config)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 4413, in _build_store_from_config
+    "root_directory": self.root_directory,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/store.py", line 287, in build_store_from_config
+    config_defaults=config_defaults,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/util.py", line 96, in instantiate_class_from_config
+    class_instance = class_(**config_with_defaults)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/validations_store.py", line 140, in __init__
+    store_name=store_name,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/store.py", line 77, in __init__
+    "store_name": self._store_name,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/util.py", line 96, in instantiate_class_from_config
+    class_instance = class_(**config_with_defaults)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/tuple_store_backend.py", line 278, in __init__
+    exist_ok=True,
+  File "/usr/local/lib/python3.7/os.py", line 223, in makedirs
+    mkdir(name, mode)
+PermissionError: [Errno 13] Permission denied: '/opt/airflow/working_dir/great_expectations/uncommitted/validations'
+[2023-04-25T21:19:35.329+0000] {processor.py:755} WARNING - No viable dags retrieved from /opt/airflow/dags/noaa.py
+[2023-04-25T21:19:35.361+0000] {processor.py:175} INFO - Processing /opt/airflow/dags/noaa.py took 9.735 seconds
+[2023-04-25T21:20:05.842+0000] {processor.py:153} INFO - Started process (PID=317) to work on /opt/airflow/dags/noaa.py
+[2023-04-25T21:20:05.844+0000] {processor.py:743} INFO - Processing file /opt/airflow/dags/noaa.py for tasks to queue
+[2023-04-25T21:20:05.844+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:05.844+0000] {dagbag.py:538} INFO - Filling up the DagBag from /opt/airflow/dags/noaa.py
+[2023-04-25T21:20:08.253+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.252+0000] {warnings.py:110} WARNING - /opt/airflow/dags/noaa.py:26: RemovedInAirflow3Warning: Function `days_ago` is deprecated and will be removed in Airflow 3.0. You can achieve equivalent behavior with `pendulum.today('UTC').add(days=-N, ...)`
+  start_date=days_ago(0),
+[2023-04-25T21:20:08.265+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.265+0000] {warnings.py:110} WARNING - /opt/airflow/dags/noaa.py:60: RemovedInAirflow3Warning: provide_context is deprecated as of 2.0 and is no longer required
+  dag=dag,
+[2023-04-25T21:20:08.265+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.265+0000] {warnings.py:110} WARNING - /opt/airflow/dags/noaa.py:67: RemovedInAirflow3Warning: provide_context is deprecated as of 2.0 and is no longer required
+  dag=dag,
+[2023-04-25T21:20:08.266+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.266+0000] {great_expectations.py:121} INFO - Ensuring data context is valid...
+[2023-04-25T21:20:08.347+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.347+0000] {file_data_context.py:200} INFO - FileDataContext loading fluent config
+[2023-04-25T21:20:08.349+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.349+0000] {config.py:152} INFO - Loading 'datasources' ->
+[]
+[2023-04-25T21:20:08.349+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.349+0000] {config.py:192} INFO - Loaded 'datasources' ->
+[]
+[2023-04-25T21:20:08.387+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.387+0000] {abstract_data_context.py:1367} INFO - Profiler store is not configured; omitting it from active stores
+[2023-04-25T21:20:08.391+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.391+0000] {abstract_data_context.py:1367} INFO - Profiler store is not configured; omitting it from active stores
+[2023-04-25T21:20:08.401+0000] {logging_mixin.py:137} INFO - [2023-04-25T21:20:08.392+0000] {dagbag.py:343} ERROR - Failed to import: /opt/airflow/dags/noaa.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/models/dagbag.py", line 339, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/opt/airflow/dags/noaa.py", line 74, in <module>
+    fail_task_on_validation_failure=False
+  File "/home/airflow/.local/lib/python3.7/site-packages/airflow/models/baseoperator.py", line 394, in apply_defaults
+    result = func(self, **kwargs, default_args=default_args)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations_provider/operators/great_expectations.py", line 124, in __init__
+    context_root_dir=self.data_context_root_dir
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/data_context.py", line 177, in DataContext
+    cloud_config=cloud_config,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/base_data_context.py", line 194, in BaseDataContext
+    cloud_mode=cloud_mode,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/util.py", line 1931, in get_context
+    runtime_environment=runtime_environment,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/file_data_context.py", line 66, in __init__
+    runtime_environment=runtime_environment,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/serializable_data_context.py", line 68, in __init__
+    super().__init__(runtime_environment=runtime_environment)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/core/usage_statistics/usage_statistics.py", line 318, in usage_statistics_wrapped_method
+    result = func(*args, **kwargs)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 286, in __init__
+    self._init_primary_stores(self.project_config_with_variables_substituted.stores)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 4477, in _init_primary_stores
+    self._build_store_from_config(store_name, store_config)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/data_context/abstract_data_context.py", line 4413, in _build_store_from_config
+    "root_directory": self.root_directory,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/store.py", line 287, in build_store_from_config
+    config_defaults=config_defaults,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/util.py", line 96, in instantiate_class_from_config
+    class_instance = class_(**config_with_defaults)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/validations_store.py", line 140, in __init__
+    store_name=store_name,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/store.py", line 77, in __init__
+    "store_name": self._store_name,
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/util.py", line 96, in instantiate_class_from_config
+    class_instance = class_(**config_with_defaults)
+  File "/home/airflow/.local/lib/python3.7/site-packages/great_expectations/data_context/store/tuple_store_backend.py", line 278, in __init__
+    exist_ok=True,
+  File "/usr/local/lib/python3.7/os.py", line 223, in makedirs
+    mkdir(name, mode)
+PermissionError: [Errno 13] Permission denied: '/opt/airflow/working_dir/great_expectations/uncommitted/validations'
+[2023-04-25T21:20:08.401+0000] {processor.py:755} WARNING - No viable dags retrieved from /opt/airflow/dags/noaa.py
+[2023-04-25T21:20:08.507+0000] {processor.py:175} INFO - Processing /opt/airflow/dags/noaa.py took 2.669 seconds

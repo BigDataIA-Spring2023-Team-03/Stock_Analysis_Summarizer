@@ -1,0 +1,42 @@
+[2023-04-28T07:33:07.313+0000] {taskinstance.py:1083} INFO - Dependencies all met for <TaskInstance: stock_analyzer.stocks_data_validation manual__2023-04-28T07:32:28.396226+00:00 [queued]>
+[2023-04-28T07:33:07.328+0000] {taskinstance.py:1083} INFO - Dependencies all met for <TaskInstance: stock_analyzer.stocks_data_validation manual__2023-04-28T07:32:28.396226+00:00 [queued]>
+[2023-04-28T07:33:07.328+0000] {taskinstance.py:1279} INFO - 
+--------------------------------------------------------------------------------
+[2023-04-28T07:33:07.328+0000] {taskinstance.py:1280} INFO - Starting attempt 1 of 1
+[2023-04-28T07:33:07.329+0000] {taskinstance.py:1281} INFO - 
+--------------------------------------------------------------------------------
+[2023-04-28T07:33:07.358+0000] {taskinstance.py:1300} INFO - Executing <Task(GreatExpectationsOperator): stocks_data_validation> on 2023-04-28 07:32:28.396226+00:00
+[2023-04-28T07:33:07.371+0000] {standard_task_runner.py:55} INFO - Started process 692 to run task
+[2023-04-28T07:33:07.374+0000] {standard_task_runner.py:82} INFO - Running: ['***', 'tasks', 'run', 'stock_analyzer', 'stocks_data_validation', 'manual__2023-04-28T07:32:28.396226+00:00', '--job-id', '7', '--raw', '--subdir', 'DAGS_FOLDER/main.py', '--cfg-path', '/tmp/tmpx0eoc07i']
+[2023-04-28T07:33:07.375+0000] {standard_task_runner.py:83} INFO - Job 7: Subtask stocks_data_validation
+[2023-04-28T07:33:07.471+0000] {task_command.py:388} INFO - Running <TaskInstance: stock_analyzer.stocks_data_validation manual__2023-04-28T07:32:28.396226+00:00 [running]> on host e48c557aa0b5
+[2023-04-28T07:33:07.625+0000] {taskinstance.py:1509} INFO - Exporting the following env vars:
+AIRFLOW_CTX_DAG_OWNER=***
+AIRFLOW_CTX_DAG_ID=stock_analyzer
+AIRFLOW_CTX_TASK_ID=stocks_data_validation
+AIRFLOW_CTX_EXECUTION_DATE=2023-04-28T07:32:28.396226+00:00
+AIRFLOW_CTX_TRY_NUMBER=1
+AIRFLOW_CTX_DAG_RUN_ID=manual__2023-04-28T07:32:28.396226+00:00
+[2023-04-28T07:33:07.627+0000] {great_expectations.py:143} INFO - Running validation with Great Expectations...
+[2023-04-28T07:33:08.057+0000] {validator.py:1428} INFO - 	25 expectation(s) included in expectation_suite.
+[2023-04-28T07:33:08.614+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:   0%|          | 0/54 [00:00<?, ?it/s]
+[2023-04-28T07:33:08.614+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:   0%|          | 0/54 [00:00<?, ?it/s]
+[2023-04-28T07:33:08.616+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:   4%|3         | 2/54 [00:00<00:00, 1378.57it/s]
+[2023-04-28T07:33:08.719+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:   4%|3         | 2/54 [00:00<00:02, 19.04it/s]  
+[2023-04-28T07:33:08.720+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:   4%|3         | 2/54 [00:00<00:02, 19.04it/s]
+[2023-04-28T07:33:08.721+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:   6%|5         | 3/54 [00:00<00:02, 19.04it/s]
+[2023-04-28T07:33:08.779+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:   6%|5         | 3/54 [00:00<00:02, 19.04it/s]
+[2023-04-28T07:33:08.831+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:  44%|####4     | 24/54 [00:00<00:00, 126.66it/s]
+[2023-04-28T07:33:08.831+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:  44%|####4     | 24/54 [00:00<00:00, 126.66it/s]
+[2023-04-28T07:33:08.922+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:  44%|####4     | 24/54 [00:00<00:00, 126.66it/s]
+[2023-04-28T07:33:09.018+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:  96%|#########6| 52/54 [00:00<00:00, 140.34it/s]
+[2023-04-28T07:33:09.018+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:  96%|#########6| 52/54 [00:00<00:00, 140.34it/s]
+[2023-04-28T07:33:09.071+0000] {logging_mixin.py:137} WARNING - Calculating Metrics:  96%|#########6| 52/54 [00:00<00:00, 140.34it/s]
+[2023-04-28T07:33:09.073+0000] {logging_mixin.py:137} WARNING - Calculating Metrics: 100%|##########| 54/54 [00:00<00:00, 140.34it/s]
+[2023-04-28T07:33:09.101+0000] {logging_mixin.py:137} WARNING - Calculating Metrics: 100%|##########| 54/54 [00:00<00:00, 140.34it/s]
+[2023-04-28T07:33:09.102+0000] {logging_mixin.py:137} WARNING - Calculating Metrics: 100%|##########| 54/54 [00:00<00:00, 140.34it/s]
+[2023-04-28T07:33:09.102+0000] {logging_mixin.py:137} WARNING - Calculating Metrics: 100%|##########| 54/54 [00:00<00:00, 110.74it/s]
+[2023-04-28T07:33:11.008+0000] {great_expectations.py:185} INFO - Validation with Great Expectations successful.
+[2023-04-28T07:33:11.073+0000] {taskinstance.py:1323} INFO - Marking task as SUCCESS. dag_id=stock_analyzer, task_id=stocks_data_validation, execution_date=20230428T073228, start_date=20230428T073307, end_date=20230428T073311
+[2023-04-28T07:33:11.170+0000] {local_task_job.py:208} INFO - Task exited with return code 0
+[2023-04-28T07:33:11.203+0000] {taskinstance.py:2578} INFO - 0 downstream tasks scheduled from follow-on schedule check
