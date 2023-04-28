@@ -207,3 +207,23 @@ Airflow is an open-source platform to programmatically author, schedule, and mon
 1. daily_article_fetcher.py, which keeps the articles up to date for the top 10 standard stock tickers we have picked.
 2. new_article_fetcher.py, which will get triggered when user enters a new stock ticker to fetch articles for 30 days and gets the sentiments for each of the articles to categorise each into either positive or negative.
 3. delete_old_files_dag.py: this dag deletes all the files older to 30 days from the S3 buckets.
+
+## Great Expectations using docker-compose
+
+Step 1 - Change the directory to great_expectation and install the requirements
+```bash
+cd ../great_expectation
+pip install -r requirements.txt
+```
+
+Step 2 - Run the docker-compose.yml file
+```bash
+docker-compose up
+```
+
+Step 3 - The Airflow Applications will be up on ```http://localhost:8080```
+Login to Airflow and trigger the DAG - stock_analyzer for Data Validation
+
+
+Step 4 - The GE Applications will be up on ```http://localhost:5500```
+Navigate to great_expectation/airflow/working_dir/great_expectations/uncommitted/data_docs/local_site/ to check the validation report
