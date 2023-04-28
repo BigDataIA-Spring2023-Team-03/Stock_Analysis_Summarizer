@@ -30,7 +30,7 @@ This project aims to provide summary of the analysis articles for a given portfo
 ![](https://img.shields.io/badge/Snowflake-blue?style=for-the-badge&logo=Snowflake&logoColor=white)
 
 #Architecture
-![Architecture_diagram]()
+![Architecture_diagram](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/blob/main/stock_analysis_summarizer.png)
 
 # Workflow
 - User enters a portfolio of stock tickers in the Streamlit web interface.
