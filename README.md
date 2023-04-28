@@ -5,16 +5,18 @@
 [![FastAPI Unit Tests](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/actions/workflows/pytest.yml/badge.svg)](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/actions/workflows/pytest.yml)
 
 # Code Coverage - CodeCov
+Integrated our repository with the CodeCov to get the code coverage with the tests written. <br>
+Below is the codecoverage showing different files of the fastapi module of Stock Analysis Summarizer.<br>
 <img src="https://codecov.io/gh/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/branch/main/graphs/sunburst.svg?token=NGU9K01WWF" alt="Code Coverage" width="200" height="200">
 
 [![Code Coverage](https://codecov.io/gh/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/branch/main/graph/badge.svg?token=NGU9K01WWF)](https://codecov.io/gh/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer)
 
 
 # CLaaT Document
-https://codelabs-preview.appspot.com/?file_id=1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA#5
+https://codelabs-preview.appspot.com/?file_id=1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA#14
 
 # Google Document
-https://docs.google.com/document/d/1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA/edit?usp=sharing
+https://docs.google.com/document/d/1p_WCcLuuckm8ZOMLAS3dW51qS42W7ai5eQi7n4rgSek/edit
 
 
 # Overview
@@ -139,6 +141,8 @@ Step 4 - Run the streamlit application using the below command
 streamlit run Home.py
 ```
 
+Step 5 - The Application will be up on ```http://localhost:8501```
+
 ## FastAPI
 
 Step 1 - Similarly, change the directory to fastapi and install the requirements
@@ -161,7 +165,9 @@ Step 4 - Navigate to fastapi folder and the Run the FastAPI using the following 
 uvicorn apis:app --reload
 ```
 
-## OR FastAPI & Streamlit using docker-compose
+Step 5 - The Application will be up on ```http://localhost:8000/docs```
+
+## (OR) FastAPI & Streamlit using docker-compose
 
 Step 1 - Install docker and docker-compose in the local machine
 
@@ -170,3 +176,20 @@ Step 2 - Build and Run the docker-compose.yml file
 docker-compose build
 docker-compose up
 ```
+Step 3 - The Applications will be up on ```http://localhost:8501``` and ```http://localhost:8000/docs```
+
+## Airflow 
+
+Step 1 - Install airflow in the local machine
+
+Step 2 - Change the directory to airflow
+```bash
+cd airflow
+```
+
+Step 3 - Run the docker-compose.yml file
+```bash
+docker-compose up
+```
+
+Step 4 - The Application will be up on ```http://localhost:8080```
