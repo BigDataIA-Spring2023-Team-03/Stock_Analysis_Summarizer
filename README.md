@@ -234,6 +234,4 @@ Step 4 - The GE Applications will be up on ```http://localhost:5500```
 Navigate to great_expectation/airflow/working_dir/great_expectations/uncommitted/data_docs/local_site/ to check the validation report
 
 # Brief Overview and Demo
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/fgqYGhZE1Us" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
+https://www.youtube.com/embed/fgqYGhZE1Us
