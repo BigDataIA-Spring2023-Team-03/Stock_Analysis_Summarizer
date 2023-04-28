@@ -16,7 +16,7 @@ Below is the codecoverage showing different files of the fastapi module of Stock
 https://codelabs-preview.appspot.com/?file_id=1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA#14
 
 # Google Document
-https://docs.google.com/document/d/1p_WCcLuuckm8ZOMLAS3dW51qS42W7ai5eQi7n4rgSek/edit
+https://docs.google.com/document/d/1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA/edit?usp=sharing
 
 
 # Overview
@@ -49,7 +49,7 @@ When a user logs in or signs up on the Streamlit application, they are granted a
 ![](https://img.shields.io/badge/Snowflake-blue?style=for-the-badge&logo=Snowflake&logoColor=white)
 
 # Architecture
-![Architecture_diagram](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/blob/main/stock_analysis_summarizer.png)
+![Architecture_diagram](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/blob/main/stock_analysis_summarizer_arch.png)
 
 # Workflow
 - User enters a portfolio of stock tickers in the Streamlit web interface.
@@ -232,3 +232,6 @@ Login to Airflow and trigger the DAG - stock_analyzer for Data Validation
 
 Step 4 - The GE Applications will be up on ```http://localhost:5500```
 Navigate to great_expectation/airflow/working_dir/great_expectations/uncommitted/data_docs/local_site/ to check the validation report
+
+# Brief Overview and Demo
+https://youtu.be/fgqYGhZE1Us
