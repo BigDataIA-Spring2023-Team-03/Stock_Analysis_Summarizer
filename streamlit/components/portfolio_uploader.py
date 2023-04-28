@@ -281,7 +281,7 @@ def portfolio_uploader():
                 pos_overall_summary = pos_overall_summary.replace("'", "\\'")
                 neg_overall_summary = neg_overall_summary.replace("'", "\\'")
 
-                
+
                 try:
                     pos_count = sentiment_counts.loc[sentiment_counts['sentiment'] == 'positive', 'count'].values[0]
                 except:
