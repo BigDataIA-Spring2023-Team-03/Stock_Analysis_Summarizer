@@ -26,7 +26,7 @@ def delete_file(delete_file_path):
 conn = {
     'account': 'sh13682.ca-central-1.aws',
     'user': 'DAMG7245_SA',
-    'password': 'DAMG7245_final',
+    'password': 'password',
     'database': 'STOCK_ANALYSIS_APP',
     'schema': 'PUBLIC',
     'warehouse': 'compute_wh',
