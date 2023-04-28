@@ -2,7 +2,7 @@ import streamlit as st
 import yfinance as yf
 import plotly.express as px
 import pandas as pd
-import datetime
+from datetime import datetime, timedelta
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 from Util import db_util
@@ -87,12 +87,18 @@ def analysis_vs_reality():
         st.plotly_chart(fig)
 
         # Change in stock 
-        analysis_price = data.loc[selected_date.strftime('%Y-%m-%d'), 'Close']
+        # st.write(data.head(10))
+        # st.write((selected_date- timedelta(days=1)).strftime('%Y-%m-%d'))
+        try:
+            analysis_price = data.loc[selected_date.strftime('%Y-%m-%d'), 'Close']
+        except:
+            # Current close date not available yet
+            analysis_price = data.loc[(selected_date- timedelta(days=1)).strftime('%Y-%m-%d'), 'Close']
         end_price = data['Close'][-1]
         st.write(f'Price during Analysis: {analysis_price: .2f} vs. Current Price {end_price: .2f}')
         change = (end_price - analysis_price) / analysis_price
 
-        if change > 0:
+        if change >= 0:
             st.subheader(f'{selected_stock} has changed :green[{change: .2f}%] since running the analysis')
         else:
             st.write(f'{selected_stock} has changed :red[{change: .2f}%] since running the analysis')

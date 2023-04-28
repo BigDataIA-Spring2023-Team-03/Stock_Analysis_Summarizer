@@ -16,7 +16,7 @@ from transformers import pipeline, BartTokenizer
 from Util import db_util
 
 # DEV or PROD
-environment = 'PROD'
+environment = 'DEV'
 if environment == 'DEV':
     fastapi_webserver = 'localhost:8000'
     airflow_webserver = 'localhost:8080'
@@ -94,15 +94,21 @@ def get_analysis_data(stock):
     # TESTING
     # st.write('Analysis_Results/{stock}')
     folder = s3_client.list_objects_v2(Bucket=s3_bucket_name, Prefix=f'Analysis_Results/{stock}')
-    for obj in folder['Contents']:
-        files = obj['Key']
-        print(files)
-        # Pull JSON data from each file
-        response = s3_client.get_object(Bucket=s3_bucket_name, Key=files)
-        content = response['Body']
-        analysis_dataset.extend(json.loads(content.read()))
+    print(folder)
+    print(f"""Total Files in S3: {folder['KeyCount']}""")
+    # If there are articles
+    if folder['KeyCount'] > 0:
+        for obj in folder['Contents']:
+            files = obj['Key']
+            print(files)
+            # Pull JSON data from each file
+            response = s3_client.get_object(Bucket=s3_bucket_name, Key=files)
+            content = response['Body']
+            analysis_dataset.extend(json.loads(content.read()))
 
-    return pd.DataFrame(analysis_dataset, columns=['publish_date', 'bart_summary', 'sentiment'])
+        return pd.DataFrame(analysis_dataset, columns=['publish_date', 'bart_summary', 'sentiment'])
+    else:
+        return pd.DataFrame()
 
 
 # Check DAG Status
@@ -244,7 +250,12 @@ def portfolio_uploader():
                         if check_dag_status("new_stock_article_fetcher") == 'success':
                             # get data from S3
                             df = get_analysis_data(value)
-                            st.write(df.head(10))
+                            # Stop the script if there are no articles and display an error
+                            if df.empty:
+                                st.error(f'{value} has no articles on Seeking Alpha, try a different stock')
+                                st.stop()
+                            
+                            st.write(df.head(10).sort_values('publish_date', ascending=False))
 
                     data2 = {'email': st.session_state.email}
                     headers = {"Authorization": f"Bearer {st.session_state.access_token}"}
@@ -260,8 +271,14 @@ def portfolio_uploader():
                     # Summarize the Positive and Negative articles
                     # st.write(df.loc[df['sentiment'] == 'positive', 'bart_summary'])
                     final_df = df.groupby(['sentiment'], as_index=False).agg({'bart_summary': ' '.join})
-                    pos_summary = final_df[final_df['sentiment'] == 'positive']['bart_summary'].item()
-                    neg_summary = final_df[final_df['sentiment'] == 'negative']['bart_summary'].item()
+                    try:
+                        pos_summary = final_df[final_df['sentiment'] == 'positive']['bart_summary'].item()
+                    except:
+                        pos_summary = ''
+                    try:
+                        neg_summary = final_df[final_df['sentiment'] == 'negative']['bart_summary'].item()
+                    except:
+                        neg_summary = ''
 
                     # Use Facebook BART model to summarize the aggregation of summaries
                     pos_overall_summary = article_summary('positive', pos_summary)
