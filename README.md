@@ -1,4 +1,7 @@
 # Stock Analysis Summarizer
+
+## Application Link: http://54.147.73.127:8501
+
 [![FastAPI Unit Tests](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/actions/workflows/pytest.yml/badge.svg)](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/actions/workflows/pytest.yml)
 
 # Code Coverage - CodeCov
