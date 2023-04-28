@@ -281,8 +281,16 @@ def portfolio_uploader():
                         neg_summary = ''
 
                     # Use Facebook BART model to summarize the aggregation of summaries
-                    pos_overall_summary = article_summary('positive', pos_summary)
-                    neg_overall_summary = article_summary('negative', neg_summary)
+                    # IF there are no positive or negative articles
+                    if pos_summary != '':
+                        pos_overall_summary = article_summary('positive', pos_summary)
+                    else:
+                        pos_overall_summary = 'No positive sentiment articles'
+                    if neg_summary != '':
+                        neg_overall_summary = article_summary('negative', neg_summary)
+                    else:
+                        neg_overall_summary = 'No negative sentiment articles'
+                    
 
                     # Display results
                     col1, col2 = st.columns(2)
