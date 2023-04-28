@@ -194,4 +194,16 @@ docker-compose up
 
 Step 4 - The Application will be up on ```http://localhost:8080```
 
+# Project Components
 
+## Streamlit:
+Streamlit is an open-source Python library used for building interactive web applications. In this project, Streamlit is used to create a user interface that allows the user to enter their portfolio of stock tickers to get their corresponding positive/negative summaries. The Streamlit web interface displays the output of the summarised and sentiment analysis performed on the collected articles from SeekingAlpha. Streamlit also handles the user login and sign-up functionalities to grant access to the Application.
+
+## FastAPI:
+FastAPI is a modern, fast (high-performance), web framework for building APIs with python. In this project, FastAPI is used to decouple the frontend and backend. It is primarily used for user related actions such as login, register, upgrading the service plan. 
+
+## Airflow:
+Airflow is an open-source platform to programmatically author, schedule, and monitor workflows. In this project, primarily 3 Airflow DAGs have been used: 
+1. daily_article_fetcher.py, which keeps the articles up to date for the top 10 standard stock tickers we have picked.
+2. new_article_fetcher.py, which will get triggered when user enters a new stock ticker to fetch articles for 30 days and gets the sentiments for each of the articles to categorise each into either positive or negative.
+3. delete_old_files_dag.py: this dag deletes all the files older to 30 days from the S3 buckets.
