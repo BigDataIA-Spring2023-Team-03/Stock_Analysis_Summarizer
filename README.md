@@ -208,6 +208,9 @@ Airflow is an open-source platform to programmatically author, schedule, and mon
 2. new_article_fetcher.py, which will get triggered when user enters a new stock ticker to fetch articles for 30 days and gets the sentiments for each of the articles to categorise each into either positive or negative.
 3. delete_old_files_dag.py: this dag deletes all the files older to 30 days from the S3 buckets.
 
+## APIs:
+Yahoo Finance python is used to fetch latest prices of stock tickers. Additionally, Seeking Alpha API is also used to fetch news and summary for a particular stock ticker.
+
 ## Great Expectations using docker-compose
 
 Step 1 - Change the directory to great_expectation and install the requirements
