@@ -224,8 +224,8 @@ docker-compose up
 ```
 
 Step 3 - The Airflow Applications will be up on ```http://localhost:8080```
-\nLogin to Airflow and trigger the DAG - stock_analyzer for Data Validation
+Login to Airflow and trigger the DAG - stock_analyzer for Data Validation
 
 
 Step 4 - The GE Applications will be up on ```http://localhost:5500```
-\nNavigate to great_expectation/airflow/working_dir/great_expectations/uncommitted/data_docs/local_site/ to check the validation report
+Navigate to great_expectation/airflow/working_dir/great_expectations/uncommitted/data_docs/local_site/ to check the validation report
