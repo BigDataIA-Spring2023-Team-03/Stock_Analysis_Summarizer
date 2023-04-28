@@ -21,6 +21,7 @@ with Diagram("Stock_Analysis_Summarizer", show=False, direction='LR'):
 
         with Cluster("Database"):
             snowflake = Custom("Snowflake", "snowflake.png")
+            ge = Custom("Great Expectations", "ge.png")
 
         with Cluster("TickerInfo"):
             gpt = Custom("GPT", "gpt.png")
@@ -40,6 +41,9 @@ with Diagram("Stock_Analysis_Summarizer", show=False, direction='LR'):
             procusFinbert = Custom("ProsusAI/finbert", "procus.png")
             bertSummary = Custom("Summary BERT", "bert.png")
 
+    docker = Custom("Docker", "docker.png")
+    ec2 = Custom("EC2", "ec2.png")
+
     
     # Defining Edges
     user >> Edge(label = "SignUp/Login to Dashboard") >> userfacing
@@ -50,6 +54,7 @@ with Diagram("Stock_Analysis_Summarizer", show=False, direction='LR'):
 
     userfacing >> Edge(label = "Gets ticker name based on Company")>> gpt
     fastAPI >> snowflake
+    snowflake << ge
     
     userfacing >> Edge(label = "Triggers on a daily basis") >> airflow 
     airflow >> Edge(label = "Fetches the top 10 NASDAQ stock tickers") >> rapid
@@ -80,4 +85,7 @@ with Diagram("Stock_Analysis_Summarizer", show=False, direction='LR'):
     procusFinbert >> Edge(label = "Summarises all positive and all negative sentives in one positive/negative sentiment") >> bertSummary
 
     bertSummary >> Edge(label= "Stores summary int S3") >> datastorage
+
+    userfacing >> docker
+    docker >> ec2 
     
