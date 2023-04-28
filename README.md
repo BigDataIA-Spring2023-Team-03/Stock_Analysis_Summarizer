@@ -21,6 +21,10 @@ https://docs.google.com/document/d/1p_WCcLuuckm8ZOMLAS3dW51qS42W7ai5eQi7n4rgSek/
 
 This project aims to provide summary of the analysis articles for a given portfolio of stock tickers. The data is collected from SeekingAlpha, a financial news website that publishes analysis articles on various stocks.
 
+# Detailed User Process
+
+When a user logs in or signs up on the Streamlit application, they are granted access to the features of the application. One of these features is the GPT API, which allows the user to get the ticker name for a particular company. To use this feature, the user enters the ticker/tickers in the Streamlit web interface. When the user enters the ticker, an Airflow DAG is triggered to collect articles related to the provided stock tickers from SeekingAlpha. Once the articles are collected, they are preprocessed using Natural Language Processing (NLP) techniques, and sentiment analysis is performed on each article using the Procus-Finbert model. This model determines whether the article is positive or negative towards the company. All positive articles are then summarized into one positive summary, and the same is done for negative articles. The results are then stored in an S3 bucket. Finally, the summaries are displayed in the Streamlit web interface for the user to view. This entire process involves a series of technical steps that utilize different technologies to ensure accurate results and a seamless user experience.
+
 # Technologies Used
 ![Python](https://img.shields.io/badge/python-grey?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![](https://img.shields.io/badge/FastAPI-4285F4?style=for-the-badge&logo=fastapi&logoColor=white)
