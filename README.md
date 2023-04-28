@@ -213,6 +213,8 @@ Airflow is an open-source platform to programmatically author, schedule, and mon
 Step 1 - Change the directory to great_expectation and install the requirements
 ```bash
 cd ../great_expectation
+```
+```bash
 pip install -r requirements.txt
 ```
 
@@ -222,8 +224,8 @@ docker-compose up
 ```
 
 Step 3 - The Airflow Applications will be up on ```http://localhost:8080```
-Login to Airflow and trigger the DAG - stock_analyzer for Data Validation
+\nLogin to Airflow and trigger the DAG - stock_analyzer for Data Validation
 
 
 Step 4 - The GE Applications will be up on ```http://localhost:5500```
-Navigate to great_expectation/airflow/working_dir/great_expectations/uncommitted/data_docs/local_site/ to check the validation report
+\nNavigate to great_expectation/airflow/working_dir/great_expectations/uncommitted/data_docs/local_site/ to check the validation report
