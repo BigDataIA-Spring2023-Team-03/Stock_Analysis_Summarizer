@@ -115,25 +115,58 @@ Sentiment_Stock_Forecaster/
 ```
 
 
-# Local Installation
+# Local Installation 
+## Streamlit & FastAPI
 
-Step 1 -  Clone the repository on your local system using the below command :
+Step 1 -  Clone the repository on your local system using the below command and Change the directory to streamlit:
 ```bash
 git clone https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer
+cd streamlit
 ```
 
-Step 2 - Install all the requirements by navigating to the streamlit folder and enter the command:
+Step 2 - Create Virtual Environment
+```bash
+python -m venv venv_streamlit
+```
+
+Step 3 - Install all the requirements by navigating to the streamlit folder and enter the command:
 ```bash
 pip install -r requirements.txt
 ```
-Step 3 - open terminal in local system or in VSCode and navigate into the Stock_Analysis_Summarizer
+
+Step 4 - Run the streamlit application using the below command
+```bash
+streamlit run Home.py
+```
+
+## FastAPI
+
+Step 1 - Similarly, change the directory to fastapi and install the requirements
+```bash
+cd ../fastapi
+```
+
+Step 2 - Create Virtual Environment
+```bash
+python -m venv venv_fastapi
+```
+
+Step 3 - Install all the requirements by navigating to the streamlit folder and enter the command:
+```bash
+pip install -r requirements.txt
+```
 
 Step 4 - Navigate to fastapi folder and the Run the FastAPI using the following command:
 ```bash
-uvicorn api.py:app --reload --port:8000
+uvicorn apis:app --reload
 ```
 
-Step 5 - Open a new terminal without stopping FASTAPI and navigate to streamlit folder and run streamlit app: 
+## OR FastAPI & Streamlit using docker-compose
+
+Step 1 - Install docker and docker-compose in the local machine
+
+Step 2 - Build and Run the docker-compose.yml file
 ```bash
-streamlit run Home.py
+docker-compose build
+docker-compose up
 ```
