@@ -22,7 +22,7 @@ if environment == 'DEV':
     airflow_webserver = 'localhost:8080'
 elif environment == 'PROD':
     fastapi_webserver = 'backend:8000'
-    airflow_webserver = 'airflow-airflow-webserver-1:8080'
+    airflow_webserver = '107.20.116.176:8080'
 
 # AWS KEYS
 aws_access_key_id = config('aws_access_key_id')
