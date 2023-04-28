@@ -341,9 +341,9 @@ def main(**kwargs):
 # )
 
 # TESTING
-stocks = ['tsla', 'unh', 'meta']
+# stocks = ['tsla', 'unh', 'meta']
 # TOP 10 stocks in SP500 by index weight:
-# stocks = ['aapl', 'msft', 'amzn', 'nvda', 'googl', 'brk.b', 'goog', 'tsla', 'unh', 'meta']
+stocks = ['aapl', 'msft', 'amzn', 'nvda', 'googl', 'brk.b', 'goog', 'tsla', 'unh', 'meta']
 
 main = PythonOperator(
     task_id='main',
