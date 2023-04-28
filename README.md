@@ -16,7 +16,7 @@ Below is the codecoverage showing different files of the fastapi module of Stock
 https://codelabs-preview.appspot.com/?file_id=1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA#14
 
 # Google Document
-https://docs.google.com/document/d/1p_WCcLuuckm8ZOMLAS3dW51qS42W7ai5eQi7n4rgSek/edit
+https://docs.google.com/document/d/1xpThxuUEYJ5D3UqJBafAID6McqWWZlaih32qt9NzPEA/edit?usp=sharing
 
 
 # Overview
