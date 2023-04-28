@@ -49,7 +49,7 @@ When a user logs in or signs up on the Streamlit application, they are granted a
 ![](https://img.shields.io/badge/Snowflake-blue?style=for-the-badge&logo=Snowflake&logoColor=white)
 
 # Architecture
-![Architecture_diagram](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/blob/main/stock_analysis_summarizer.png)
+![Architecture_diagram](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/blob/main/stock_analysis_summarizer_arch.png)
 
 # Workflow
 - User enters a portfolio of stock tickers in the Streamlit web interface.
