@@ -130,3 +130,27 @@ When a user logs in or signs up on the Streamlit application, they are granted a
 * [arch.py](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/arch.py)
 * [docker-compose.yml](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/docker-compose.yml)
 * [stock_analysis_summarizer](https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer/stock_analysis_summarizer)
+
+# Local Installation
+Local Installation
+
+Step 1 -  Clone the repository on your local system using the below command :
+```bash
+git clone https://github.com/BigDataIA-Spring2023-Team-03/Stock_Analysis_Summarizer
+```
+
+Step 2 - Install all the requirements by navigating to the streamlit folder and enter the command:
+```bash
+pip install -r requirements.txt
+```
+Step 3 - open terminal in local system or in VSCode and navigate into the Stock_Analysis_Summarizer
+
+Step 4 - Navigate to fastapi folder and the Run the FastAPI using the following command:
+```bash
+uvicorn api.py:app --reload --port:8000
+```
+
+Step 5 - Open a new terminal without stopping FASTAPI and navigate to streamlit folder and run streamlit app: 
+```bash
+streamlit run Home.py
+```
